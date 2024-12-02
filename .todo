@@ -1,0 +1,16 @@
+Features:
+    ☐ `ctrl/cmd + enter` or `alt/option + enter` for toggling tickbox
+    ☐ `alt/option + D` toggle Done
+    ☐ `alt/option + C` toggle Cancelled
+    ☐ `alt/option + S` toggle Start
+
+Bugs:
+
+Code Improvement:
+
+Tests:
+
+Final:
+    ☐ Update `pyproject.toml`: keywords, classifiers, etc
+    ☐ Update `README.md`
+    ☐ Update documentation

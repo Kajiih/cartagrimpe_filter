@@ -1,0 +1,123 @@
+# Build Workflow
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: 📦 Cartagrimpe Filter CI build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.13"
+        os:
+          - ubuntu-latest
+          # - macos-latest
+          # - windows-latest
+        include:
+          - os: ubuntu-latest
+            path: ~/.cache/pip
+          # - os: macos-latest
+          #   path: ~/Library/Caches/pip
+          # - os: windows-latest
+          #   path: ~\AppData\Local\pip\Cache
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      UV_SYSTEM_PYTHON: 1
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Install uv with caching
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          version: "0.5.4"
+      - name: 🐍 Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: 💾 Setup pip cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ matrix.path }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('uv.lock') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: 📥 Install the project
+        run: uv sync --all-extras --dev
+
+      - name: 🏞️ Activate virtual environment
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+              source .venv\\Scripts\\activate
+              echo PATH=$PATH >> $GITHUB_ENV
+              uv pip install pipx  # Problems with ruff action without this
+          else
+              source .venv/bin/activate
+              echo PATH=$PATH >> $GITHUB_ENV
+          fi
+
+      - name: 🧹 Lint with ruff @astral-sh
+        uses: astral-sh/ruff-action@v1
+        continue-on-error: true
+
+      - name: 🪄 Format with ruff @astral-sh
+        uses: astral-sh/ruff-action@v1
+        with:
+          args: "format --diff"
+        continue-on-error: true
+
+      - name: 🧪 Run Pytest with doctest
+        env:
+          REPORT_OUTPUT: md_report.md
+        run: |
+          echo "REPORT_FILE=${REPORT_OUTPUT}" >> "$GITHUB_ENV"
+          pytest --doctest-modules --md-report --md-report-flavor gfm --md-report-output "$REPORT_OUTPUT" --cov=. # -rA
+        continue-on-error: true
+
+      - name: 🧪 Add test output reports to the job summary
+        run: |
+          if [ -f "$REPORT_FILE" ]; then
+            echo "<details><summary>Test Report</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+      - name: ✅ Type checking with BasedPyright
+        run: |
+          uv pip install pytest hatchling  # For some reason basedpyright doesn't find those packages
+          basedpyright # --stats
+        continue-on-error: true
+
+      - name: ✅ Verify public API types with BasedPyright
+        run: |
+          uv pip install .
+          basedpyright --verifytypes cartagrimpe_filter
+        continue-on-error: true
+
+      - name: 🏗️ Build
+        run: |
+          pipx install hatch
+          hatch build
