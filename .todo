@@ -1,8 +1,12 @@
 Features:
-    ☐ `ctrl/cmd + enter` or `alt/option + enter` for toggling tickbox
-    ☐ `alt/option + D` toggle Done
-    ☐ `alt/option + C` toggle Cancelled
-    ☐ `alt/option + S` toggle Start
+    ☐ Better logging
+    ☐ Geocode caching
+    ☐ Parallel geocoding/async
+    ☐ Travel time with `traveltimepy`
+    ☐ Implementing Retries
+    ☐ Checking `robot.txt` for scraping
+    ☐ CLI + config
+
 
 Bugs:
 
