@@ -1,1054 +1,723 @@
 {
-    "30 Rue Blaise Pascal, 37000 Tours": [
-        47.387401,
-        0.6935882,
-    ],
-    "10 Avenue Clemenceau - 29200 Brest": [
-        48.3907435,
-        -4.4873416,
-    ],
-    "36 avenue du Prado - 13006 Marseille": [
-        43.2838569,
-        5.3845084,
-    ],
-    Lyon: [
-        45.7578137,
-        4.8320114,
-    ],
-    "11 Rue Lortet, 69007 Lyon": [
-        45.7430333,
-        4.8354763,
-    ],
-    "Séoul, Corée du Sud": [
-        37.5666791,
-        126.9782914,
-    ],
-    Genova: [
-        44.40726,
-        8.9338624,
-    ],
-    "Tai'an": [
-        36.2002968,
-        117.0809316,
-    ],
-    Neom: [
-        28.0058861,
-        35.2027014,
-    ],
-    "saint martin d'Hères": [
-        45.1836683,
-        5.75448,
-    ],
-    "Cité de l'escalade, 12 All. James Joule, 26000 Valence": [
-        44.8881687,
-        4.8861767,
-    ],
-    "492 Rue des Bécasses, 38920 Crolles": [
-        45.2740774,
-        5.8880838,
-    ],
-    Montbéliard: [
-        47.5102368,
-        6.7977564,
-    ],
-    "Ibarra Équateur": [
-        0.51593695,
-        -78.13294481410077,
-    ],
-    "Aime-La-Plagne": [
-        45.56609185,
-        6.612139747257789,
-    ],
-    oloron: [
-        43.1922408,
-        -0.6115586,
-    ],
-    "Bondgenotenlaan 145/149, 3000 Leuven": [
-        50.8813292,
-        4.7118576,
-    ],
-    "113 Rue des Solets, 94150 Rungis": [
-        48.7417418,
-        2.35012,
-    ],
-    "1 boulevard Poissonnière - 75002 Paris": [
-        48.8705535,
-        2.3477496,
-    ],
-    Jamshedpur: [
-        22.8015194,
-        86.2029579,
-    ],
-    Annecy: [
-        45.8992348,
-        6.1288847,
-    ],
-    "1 Avenue des Droits de l'Homme - 49100 Angers": [
-        47.4796576,
-        -0.5506626,
-    ],
-    "1 rue du Cap Vert, 21800 Quetigny": [
-        47.3125649,
-        5.0905845,
-    ],
-    "77240 Vert-Saint-Denis": [
-        48.5671024,
-        2.6252499,
-    ],
-    "Bd des Jardiniers, 06200 Nice": [
-        43.696705015410174,
-        7.191418460962584,
-    ],
-    "12 rue Yvonne Jean-Haffen - 35000 Rennes": [
-        48.1062004,
-        -1.6753866,
-    ],
-    "55 Rue de Meaux, 75019 Paris": [
-        48.8815868,
-        2.3734136,
-    ],
-    "Saint-Leu 97436, La Réunion": [
-        -21.1677694,
-        55.2881932,
-    ],
-    "Pibrac (31)": [
-        43.6189112,
-        1.2837373,
-    ],
-    "Rue Jean Jaurès 54320 MAXEVILLE": [
-        48.70822917574197,
-        6.170265159271773,
-    ],
-    "Sint-Michielshelling 3, 9000 Gent": [
-        51.0536776,
-        3.721440562926829,
-    ],
-    "40 rue de Béthune - 59800 Lille": [
-        50.6340602,
-        3.0634522,
-    ],
-    "63 Avenue de Senevulaz - 74200 Thonon-les-Bains": [
-        46.3528632,
-        6.467350858619692,
-    ],
-    "Madrid, espagne": [
-        40.4167047,
-        -3.7035825,
-    ],
-    "12 Place du commerce - 44000 Nantes": [
-        47.2133702,
-        -1.5583893,
-    ],
-    "Place de Brouckère 38 - 1000 Bruxelles": [
-        50.8518362,
-        4.352519,
-    ],
-    "Santiago, chili": [
-        -33.4377756,
-        -70.6504502,
-    ],
-    "44800 Saint-Herblain, France": [
-        47.2233007,
-        -1.6346964,
-    ],
-    "561 Avenue de Genève - 74700 Sallanches": [
-        45.941644,
-        6.629079648181818,
-    ],
-    "15 Rue des Vanniers, 84130 Le Pontet": [
-        43.983234777775195,
-        4.862139318943552,
-    ],
-    "17 Av. Pythagore, 33700 Mérignac": [
-        44.8312129,
-        -0.6819160934003848,
-    ],
-    "32 Rue Jean Pages, 33140 Villenave-d'Ornon": [
-        44.78090339341578,
-        -0.5657761107990554,
-    ],
-    "2 All. Maryse Hilsz, 33320 Eysines": [
-        44.8594875,
-        -0.6647291,
-    ],
-    "Rives de l'Orne, Quai Amiral Hamelin, Le Port, Caen, Calvados, Normandie, France métropolitaine, 14000, France": [
-        49.177830349999994,
-        -0.35016884514946756,
-    ],
-    "14 Imp. Boirac, 21000 Dijon": [
-        47.3513848,
-        5.065562026136366,
-    ],
-    "9 rue Montesquieu - 33000 Bordeaux": [
-        44.8423561,
-        -0.5789176,
-    ],
-    "Bayerstraße 3-5, 80335 München": [
-        48.1389719,
-        11.5640267,
-    ],
-    "Grand-Place 55, 1348 Ottignies-Louvain-la-Neuve, BELGIUM": [
-        50.6691235,
-        4.6115304,
-    ],
-    "22 Cour du Bartavel - 74400 Chamonix": [
-        45.9231568,
-        6.8689527,
-    ],
-    "42 rue de la république - 01200 Bellegarde-sur-Valserine": [
-        46.1072508,
-        5.8254231,
-    ],
-    "Tschamlerstraße, 7, 6020 Innsbruck": [
-        47.2568598,
-        11.39648172172966,
-    ],
-    "Rue de la Gare Fleurie 16, 5100 Namur, BELGIUM": [
-        50.4532499,
-        4.8738701,
-    ],
-    "2 Av. Pierre Mendès France, 45140 Saint-Jean-de-la-Ruelle": [
-        47.9061779,
-        1.8685348,
-    ],
-    "All. Verte 52, 1000 Bruxelles, Belgique": [
-        50.8678789,
-        4.3578246,
-    ],
-    "48, Square des Corolles 92400 Courbevoie": [
-        48.8900762,
-        2.2452045,
-    ],
-    "01100 Oyonnax, France": [
-        46.2575174,
-        5.6556181,
-    ],
-    "Chaussée de Tongres 200, 4000 Liège, BELGIUM": [
-        50.5556753,
-        5.30650535,
-    ],
-    "Gertrudis Gómez de Avellaneda, s/n, 50018 Zaragoza": [
-        41.67094650027994,
-        -0.8907220507421387,
-    ],
-    "175 Rue Pierre Seghers, 84085 Avignon": [
-        43.9284298,
-        4.8386972,
-    ],
-    "23 Avenue du Maréchal Foch, 64200, Biarritz": [
-        43.4790517,
-        -1.5584593,
-    ],
-    "10 Quai Charles de Gaulle - 69000 LYON": [
-        45.7853596,
-        4.8574548,
-    ],
-    "Boulevard des Gérardchamps 7C, 4800 Verviers, BELGIUM": [
-        50.5932137,
-        5.847627494491321,
-    ],
-    "Calle de Fuencarral, 136, 28001 Madrid": [
-        40.4315549,
-        -3.7029393365099326,
-    ],
-    "Rue Mitton - 64000 Pau": [
-        43.31486619012938,
-        -0.3579141654010481,
-    ],
-    "Carrer Nou del Teatre, 16, 17004 Girona": [
-        41.98250648444656,
-        2.825509506296522,
-    ],
-    "9, Rue de la Prune 47000 Agen": [
-        44.205575814197864,
-        0.6264605083798902,
-    ],
-    "Av. Lavoisier, 83160 La Valette-du-Var": [
-        43.13875799129092,
-        5.999340433240481,
-    ],
-    "9 Rue de la Prune 47000 Agen": [
-        44.205575814197864,
-        0.6264605083798902,
-    ],
-    "81000 Albi": [
-        43.9277552,
-        2.147899,
-    ],
-    "30 Rue Saint-Roch, 16000 Angoulême": [
-        45.6502155,
-        0.1624404,
-    ],
-    "1 Pl. de la Paix, 15000 Aurillac": [
-        44.8880031,
-        2.2387814,
-    ],
-    "1 Bd du 11 Novembre, 89000 Auxerre": [
-        47.7934671,
-        3.565756,
-    ],
-    "34420 Villeneuve-lès-Béziers": [
-        43.3162817,
-        3.2797511,
-    ],
-    "Rue Saint-Jean, 73700 Bourg-Saint-Maurice": [
-        45.62257649840599,
-        6.778219592276991,
-    ],
-    "Bd de l'Avenir, 18000 Bourges": [
-        47.08006089285128,
-        2.382366381973142,
-    ],
-    "4 avenue Jacques et Bernadette CHIRAC, 19100 Brive-la-Gaillarde": [
-        45.1662614,
-        1.5436214,
-    ],
-    "Rue Magellan, 11000 Carcassonne": [
-        43.23736359120436,
-        2.369814748776849,
-    ],
-    "1 Pl. Scheurer Kestner, 68000 Colmar": [
-        48.0821284,
-        7.355313404006001,
-    ],
-    "Bd Pasteur, 05200 Embrun": [
-        44.56549782857477,
-        6.496398503090613,
-    ],
-    "Av. Henri Becquerel, 17000 La Rochelle": [
-        46.146880124179646,
-        -1.156742190422013,
-    ],
-    "30 Rue Gustave Zédé - 56600 Lanester": [
-        47.77536235680376,
-        -3.3554680349385415,
-    ],
-    "82000 Montauban": [
-        44.0175835,
-        1.3549991,
-    ],
-    "Avenue de la Méditerranée, 30000 Nîmes": [
-        43.83165495,
-        4.3675348189319,
-    ],
-    "chemin Des Pennes Aux Pins, Les Pennes-Mirabeau, France": [
-        43.41346534944996,
-        5.36028142761482,
-    ],
-    "24 place Maréchal Leclerc, 86000 Poitiers": [
-        46.5801315,
-        0.3393852,
-    ],
-    "Av. des Forges, 65000 Tarbes": [
-        43.24118448873097,
-        0.07912967908673683,
-    ],
-    "13 rue des bas trévois, 10000 Troyes": [
-        48.293250549999996,
-        4.080044818651313,
-    ],
-    "Rue du Mail, 38500 Voiron": [
-        45.36418767176782,
-        5.591348952759259,
-    ],
-    "Rue Gustave-Delperdange 3, 6600 Bastogne, BELGIUM": [
-        50.00538075,
-        5.723995648393101,
-    ],
-    "Grand'Rue 141/143, 6000 Charleroi, BELGIUM": [
-        50.41791569198611,
-        4.4521139724103405,
-    ],
-    "45 Avenue J-F Kennedy, 1855 Luxembourg, Luxemburg": [
-        49.97058636652858,
-        5.17487906408487,
-    ],
-    "5 Carrer d'Aribau, 08011 Barcelona": [
-        41.3859576,
-        2.1623707,
-    ],
-    "Leizaola Lehendakariaren Kalea, 2, 48009 Bilbao": [
-        43.2677621,
-        -2.9413319,
-    ],
-    "Mar del Plata": [
-        -37.9977225,
-        -57.5482703,
-    ],
-    "3 Rue du Maréchal Victor duc de Bellune, 54000 Nancy": [
-        48.6911652,
-        6.1956053,
-    ],
-    "3 place du Président Wilson - 31000 Toulouse": [
-        43.6045223,
-        1.4477604,
-    ],
-    "1 Rue de Bray, 35510 Cesson-Sévigné": [
-        48.1042724,
-        -1.6319195,
-    ],
-    "Boulevard Voltaire, Chaumont, Haute-Marne, Grand Est, France métropolitaine, 52000, France": [
-        48.11246329894452,
-        5.142808868344334,
-    ],
-    "Gif-sur-Yvette": [
-        48.7018823,
-        2.134529,
-    ],
-    "13 avenue de la Plaine des Sports 95800 Cergy": [
-        49.05375974411016,
-        2.050125786789751,
-    ],
-    "1 Bd Léo Lagrange, 49130 Les Ponts-de-Cé": [
-        47.4319112,
-        -0.4991007483651606,
-    ],
-    "1 Rue Jean Jaures - 74000 Annecy": [
-        45.90198275,
-        6.128076756093108,
-    ],
-    "20 rue Charles Demia , Bourg-en-Bresse": [
-        46.1940995,
-        5.228299158878504,
-    ],
-    "07260 Joyeuse": [
-        44.4801272,
-        4.2414292,
-    ],
-    "7, Avenue de Brogny 74000 Annecy": [
-        45.903419150000005,
-        6.123378237574984,
-    ],
-    "2 Rue Louis Pergaud, 25300 Pontarlier": [
-        46.90182,
-        6.346159,
-    ],
-    "25 Avenue du Rhin, 67100 Strasbourg": [
-        48.57310305,
-        7.76391462870002,
-    ],
-    "Rue Aristide Boucicaut - 56008 Vannes": [
-        47.670893333288724,
-        -2.7911677043827616,
-    ],
-    "12 rue Gambetta, 73200 Albertville": [
-        45.677141500000005,
-        6.392640076935421,
-    ],
-    "3 Bd de Belfort, 80000 Amiens": [
-        49.88973268685819,
-        2.305663617703274,
-    ],
-    "6 Pl. Jean-Jacques Rousseau, 38300 Bourgoin-Jallieu": [
-        45.5900388,
-        5.2755243,
-    ],
-    "72 chemin des Porches, 81100 CASTRES": [
-        43.59933108358531,
-        2.2457692361214447,
-    ],
-    "Bd Félix Amiot, 50100 Cherbourg-en-Cotentin": [
-        49.642728283521855,
-        -1.6079505778053953,
-    ],
-    "3 Rue Des Villes Billy – 35780 La Richardais": [
-        48.61232885792635,
-        -2.049975270521405,
-    ],
-    "50 Rue Saint-Michel, 88000 Épinal": [
-        48.1784861,
-        6.4596599,
-    ],
-    "21 bd Maréchal Lyautey - 38000 Grenoble": [
-        45.1859198,
-        5.731540139877457,
-    ],
-    "260 Rue Aristide Briand, 87100 Limoges": [
-        45.8542614,
-        1.2848794136008344,
-    ],
-    "5 Rue Fabert, 57000 Metz": [
-        49.119001,
-        6.175407102638987,
-    ],
-    "Route de Perpignan, 11100 Narbonne": [
-        43.157965880182616,
-        2.981990206258432,
-    ],
-    "2, rue des Halles - 45000 Orléans": [
-        47.8985723,
-        1.9087974,
-    ],
-    "1 Bd Ferdinand de Lesseps, 76000 Rouen": [
-        49.44476215,
-        1.0684242,
-    ],
-    "5 Place du Palais 15100 SAINT-FLOUR": [
-        45.033169599999994,
-        3.0915186938074712,
-    ],
-    "140 Pass. Yvonne Margerit, 69400 Villefranche-sur-Saône": [
-        45.989479436451184,
-        4.724153853246808,
-    ],
-    "3 Rue Gustave Courbet - 25000 Besançon": [
-        47.2403559,
-        6.0241157,
-    ],
-    "Toorak Rd &, Chapel St, South Yarra VIC 3141": [
-        -37.839624,
-        144.9955753,
-    ],
-    "1660 Broadway, Vancouver": [
-        49.26294942636323,
-        -122.89572711871712,
-    ],
-    "25 Rue de Douai, 87000 Limoges": [
-        45.8124529,
-        1.267361399968017,
-    ],
-    "1 Rue de la Miséricorde 20200 BASTIA": [
-        42.6958781,
-        9.4477353,
-    ],
-    "All. de Glain, 64100 Bayonne": [
-        43.48599044752054,
-        -1.4710479958941467,
-    ],
-    "1 Bd Richelieu, 90000 Belfort": [
-        47.630295950000004,
-        6.861944348127114,
-    ],
-    "Les Rives De L'Orne - 14000 Caen": [
-        49.1778724,
-        -0.3514438,
-    ],
-    "12 Rue du 21 Janvier, 39100 Dole": [
-        47.0954716,
-        5.4948128,
-    ],
-    "Rue des Fusiliers Marins, 59140 Dunkerque": [
-        51.0336662137497,
-        2.3721801078002915,
-    ],
-    "76600 Le Havre": [
-        49.4938975,
-        0.1079732,
-    ],
-    "3 Place des Jacobins, 72000 Le Mans": [
-        48.007775699999996,
-        0.1992509145737581,
-    ],
-    "Prom. de la Chevalerie, 39000 Lons-le-Saunier": [
-        46.67324934968478,
-        5.557847960494169,
-    ],
-    "79 Rue de la République 69002 Lyon": [
-        45.7586907,
-        4.83488,
-    ],
-    "70 rue Michel Debré - 71000 Mâcon": [
-        46.3169872,
-        4.838245492042615,
-    ],
-    "175 Av. Robert Schuman, 68070 Mulhouse": [
-        47.7604126,
-        7.3515556,
-    ],
-    "Gaumont Nantes, 12, Place du Commerce, 44000, France": [
-        47.21347,
-        -1.558540526695896,
-    ],
-    "66100 PERPIGNAN": [
-        42.6985304,
-        2.8953121,
-    ],
-    "67 Rue de la Providence - 29000 Quimper": [
-        48.0007048,
-        -4.1100222,
-    ],
-    "51370 Thillois": [
-        49.2543702,
-        3.9530195,
-    ],
-    "18 Avenue Franklin Roosevelt, 74150 Rumilly": [
-        45.87187,
-        5.93992,
-    ],
-    "40 Bd Clemenceau, 22 000 SAINT-BRIEUC": [
-        48.45973480301654,
-        -2.501233209942285,
-    ],
-    "137 Av. Henri Falcoz, 73300 Saint-Jean-de-Maurienne": [
-        45.277493,
-        6.348211,
-    ],
-    "53 Avenue de Romans - 26000 Valence": [
-        44.9332736,
-        4.9011673,
-    ],
-    "35 Rue Lucas, 03200 Vichy": [
-        46.1265982,
-        3.4220424,
-    ],
-    "39 James St, Fortitude Valley QLD 4101": [
-        -27.4572098,
-        153.0397332,
-    ],
-    "2 Phillip Law St, Canberra ACT 2601": [
-        -35.2847434,
-        149.1229425,
-    ],
-    "300 Murray St, Perth WA 6000": [
-        -31.95163735,
-        115.85767492788645,
-    ],
-    "249 Oxford St, Paddington NSW 2021": [
-        -33.8853436,
-        151.2259706,
-    ],
-    "Lakenstraat 14, 2000 Antwerpen": [
-        51.2094151,
-        4.38757985,
-    ],
-    "Jurčkova Cesta 223, 1000 Ljubljana": [
-        46.02220065,
-        14.53665440143488,
-    ],
-    "Slavonska avenija 11d, 10000, Zagreb": [
-        45.8020083,
-        16.0508299,
-    ],
-    Bruxelles: [
-        50.8465573,
-        4.351697,
-    ],
-    "250, Chemin du Merlançon, 13400 Aubagne": [
-        43.28412669024403,
-        5.579650559707909,
-    ],
-    "4, rue derrière les murs - 73000 Chambéry": [
-        45.5666271,
-        5.9185181,
-    ],
-    "Rue René Clair, 34970 Lattes": [
-        43.583856102022835,
-        3.933666631485847,
-    ],
-    "2 Rue Praire, 42000 Saint-Étienne": [
-        45.44183,
-        4.385059,
-    ],
-    "1 rue La Fayette 67100 STRASBOURG": [
-        48.5607038,
-        7.7454122,
-    ],
-    "177 All. du Forum, 92100 Boulogne-Billancourt": [
-        48.8290418,
-        2.2332023,
-    ],
-    "27 Rue de Pontaniou, 29200 Brest": [
-        48.389606027066606,
-        -4.499143691013016,
-    ],
-    "Place du 1er Mai 63051 CLERMONT-FERRAND": [
-        45.78634975,
-        3.098918533287401,
-    ],
-    "54 Rue de Chanterac, 13002 Marseille, France": [
-        43.312342485140434,
-        5.3685819747713985,
-    ],
-    "Unterer Graben 1, 86152 Augsburg": [
-        48.3722827,
-        10.900620143423271,
-    ],
-    "Königsbrücker Str. 55, 01099 Dresden": [
-        51.0712416,
-        13.750048111750177,
-    ],
-    "Dreieichstraße 54, 60594 Frankfurt am Main": [
-        50.10349455,
-        8.690819792284223,
-    ],
-    "Alte Poststraße 470, 8055 Graz": [
-        47.031044449999996,
-        15.430434683719557,
-    ],
-    "Eppelheimer Str. 6, 69115 Heidelberg": [
-        49.405661249999994,
-        8.666627931396238,
-    ],
-    "11, 50825 Köln": [
-        50.876607250000006,
-        7.009127724590446,
-    ],
-    "Prinz-Eugen-Straße 22, 4020 Linz": [
-        48.30120625,
-        14.321477560625,
-    ],
-    "Kufsteiner Str. 34, 83022 Rosenheim": [
-        47.85071625,
-        12.126763376702595,
-    ],
-    "Salzburg Airport, Kasernenstraße 5a, 5071 Himmelreich": [
-        47.793397150000004,
-        12.988634494473816,
-    ],
-    "1220 Wien": [
-        48.2083537,
-        16.3725042,
-    ],
-    "3 Cinema Pl, Adelaide SA 5000": [
-        -34.9219368,
-        138.609272,
-    ],
-    "Rue de Nimy 12, 7000 Mons, BELGIUM": [
-        50.4553269,
-        3.9534425,
-    ],
-    "Arts 421 Cawston Ave. Kelowna, BC V1Y 6Z1": [
-        49.891259,
-        -119.4949465,
-    ],
-    "Sherbrooke, QC J1H 1P1": [
-        45.403271,
-        -71.889038,
-    ],
-    "C. Arabial, s/n, 18004 Granada": [
-        37.1694559,
-        -3.6069782000000004,
-    ],
-    "Centro Comercial Nueva Condomina, 30110 Churra": [
-        38.0410396,
-        -1.1487193,
-    ],
-    "C/ Poeta Muñoz San Román, s/n, 41900 Sevilla": [
-        37.39495911795674,
-        -6.0337260015258956,
-    ],
-    "46930, Valencia": [
-        39.4697065,
-        -0.3763353,
-    ],
-    "Calle de Leopoldo Cano, 8, 47003 Valladolid": [
-        41.6539652,
-        -4.7258569,
-    ],
-    "2 Av. du Général Barbot, 05100 Briançon": [
-        44.90139658640813,
-        6.6319430461890425,
-    ],
-    "Leopoldstr. 78 80802 München": [
-        48.160705899999996,
-        11.58652453206556,
-    ],
-    "617 8 Ave SW, Calgary, AB T2P 1H1": [
-        51.0456657,
-        -114.07500345559774,
-    ],
-    "1074 Bank St, Ottawa, ON K1S 3X3": [
-        45.3945762,
-        -75.6837644,
-    ],
-    "1401 Bd Talbot, Chicoutimi, Quebec G7H 5N6": [
-        48.4050984,
-        -71.0534453,
-    ],
-    "4520 Bd des Récollets, Trois-Rivières, QC G9A 4N2": [
-        46.3254204,
-        -72.5679354,
-    ],
-    "Canonge Brugulat 7 25003 Lleida": [
-        41.6132145,
-        0.6185432,
-    ],
-    "1 Rue Marcel Guillaume, 13100 Aix-en-Provence": [
-        43.52541164262332,
-        5.446700919609914,
-    ],
-    "74160 Archamps": [
-        46.1354538,
-        6.1332458,
-    ],
-    "Rue Barrière de Jaude - 63000 Clermont-Ferrand": [
-        45.77436186450633,
-        3.0815387351822157,
-    ],
-    "63 Rue Carnot, 05000 Gap": [
-        44.55771780356894,
-        6.079675216001594,
-    ],
-    "1010 Route Nationale 20, 45770 Saran": [
-        47.95884125,
-        1.8908076678802916,
-    ],
-    "Hohe str. 26, 70176 Stuttgart": [
-        48.7766727,
-        9.1682778,
-    ],
-    "Sint-Jakobsstraat 36, 8000 Brugge": [
-        51.2103713,
-        3.22141,
-    ],
-    "8712 109 St NW, Edmonton, AB T6G 1E9, Canada": [
-        53.5232541,
-        -113.51266085929835,
-    ],
-    "1710 Mayor Magrath Dr S, Lethbridge, AB T1K 2R5, Canada": [
-        49.6742589,
-        -112.803766,
-    ],
-    "2 Sussex Ave, Toronto": [
-        43.665640100000005,
-        -79.39953392970232,
-    ],
-    "2325 Rue de la Terrasse, Québec": [
-        46.78319505,
-        -71.27439657454323,
-    ],
-    "Parque San Adrián, 26007 Logroño": [
-        42.45655400511054,
-        -2.4605451992699225,
-    ],
-    "33429 Paredes": [
-        43.392198,
-        -5.8128523,
-    ],
-    "Av. del Gran i General Consell, 2, 07004 Palma, Illes Balears": [
-        39.57742102903803,
-        2.6526334111118635,
-    ],
-    "C/Francisco Tomás y Valiente, 1, 39011 Santander": [
-        43.43949995,
-        -3.8453857100302686,
-    ],
-    "Štěpánská 644/35, Praha 1": [
-        50.0788291,
-        14.425198,
-    ],
-    "Chmielna 33, 00-021 Warszawa": [
-        52.23153525,
-        21.012562815814665,
-    ],
-    "Rue de Bréda, 38580 Allevard": [
-        45.39893155730346,
-        6.077425829254493,
-    ],
-    "604 Boulevard du Mercantour, 06200 NICE": [
-        43.7273286,
-        7.189306933122282,
-    ],
-    "6551 Park Blvd, Joshua Tree, CA 92252": [
-        34.133421569274454,
-        -116.31507263793526,
+    "25 rue de douai, 87000 limoges": [
+        [
+            45.8124529,
+            1.267361399968017,
+        ],
+        "Limoges",
+    ],
+    bruxelles: [
+        [
+            50.8465573,
+            4.351697,
+        ],
+        "Bruxelles - Brussel",
+    ],
+    "250, chemin du merlançon, 13400 aubagne": [
+        [
+            43.28412669024403,
+            5.579650559707909,
+        ],
+        "Aubagne",
+    ],
+    "1 rue la fayette 67100 strasbourg": [
+        [
+            48.5607038,
+            7.7454122,
+        ],
+        "Strasbourg",
+    ],
+    "177 all. du forum, 92100 boulogne-billancourt": [
+        [
+            48.8290418,
+            2.2332023,
+        ],
+        "Boulogne-Billancourt",
+    ],
+    "27 rue de pontaniou, 29200 brest": [
+        [
+            48.389606027066606,
+            -4.499143691013016,
+        ],
+        "Brest",
+    ],
+    "vesigneul sur marne": [
+        [
+            48.8726678,
+            4.4581785,
+        ],
+        "Châlons-en-Champagne",
+    ],
+    "paray le monial": [
+        [
+            46.450559,
+            4.1177959,
+        ],
+        "Paray-le-Monial",
+    ],
+    echirolles: [
+        [
+            45.1481694,
+            5.718687,
+        ],
+        "Échirolles",
+    ],
+    anse: [
+        [
+            45.9364662,
+            4.7170072,
+        ],
+        "Villefranche-sur-Saône",
+    ],
+    belley: [
+        [
+            45.760758,
+            5.6861466,
+        ],
+        "Belley",
+    ],
+    tournefeuille: [
+        [
+            43.5827846,
+            1.3466543,
+        ],
+        "Tournefeuille",
+    ],
+    megève: [
+        [
+            45.8567089,
+            6.617932,
+        ],
+        "Bonneville",
+    ],
+    sélestat: [
+        [
+            48.2594396,
+            7.454217,
+        ],
+        "Sélestat",
+    ],
+    franconville: [
+        [
+            48.5000906,
+            6.4527267,
+        ],
+        "Lunéville",
+    ],
+    "saint leu": [
+        [
+            -21.1677694,
+            55.2881932,
+        ],
+        "Saint-Leu",
+    ],
+    "69 rue mstislav rostropovitch, 75017 paris": [
+        [
+            48.8911894,
+            2.3105121,
+        ],
+        "Paris",
+    ],
+    "14 imp. boirac, 21000 dijon": [
+        [
+            47.3513848,
+            5.065562026136366,
+        ],
+        "Dijon",
     ],
     "curitiba, brésil": [
-        -25.4295963,
-        -49.2712724,
+        [
+            -25.4295963,
+            -49.2712724,
+        ],
+        "Curitiba",
     ],
-    "101 Boulevard Brune, 75014 Paris": [
-        48.8261766,
-        2.315035299999998,
+    "101 boulevard brune, 75014 paris": [
+        [
+            48.8261766,
+            2.315035299999998,
+        ],
+        "Paris",
     ],
-    "Travessa Dona Marciana, 31, Botafogo, Rio de Janeiro - RJ": [
-        -22.95778095,
-        -43.181991610413846,
+    lyon: [
+        [
+            45.7578137,
+            4.8320114,
+        ],
+        "Lyon",
     ],
-    "L'Argentière-la-Bessée": [
-        44.7896878,
-        6.5588696,
+    "travessa dona marciana, 31, botafogo, rio de janeiro - rj": [
+        [
+            -22.95778095,
+            -43.181991610413846,
+        ],
+        "Rio de Janeiro",
     ],
-    "300 Boul. de Maisonneuve, Montréal, QC H2X 3X6": [
-        45.513749,
-        -73.5623063,
+    toufflers: [
+        [
+            50.6619357,
+            3.2315753,
+        ],
+        "Lille",
     ],
-    "Cihlářská 643/19": [
-        49.2042788,
-        16.6036558,
+    nozay: [
+        [
+            48.5085,
+            4.09529,
+        ],
+        "Troyes",
     ],
-    "265 Boulevard Maréchal Leclerc - 83000 Toulon": [
-        43.102882088473464,
-        6.069085524247863,
+    "hauts-de-bienne": [
+        [
+            46.51644895,
+            6.006163964971631,
+        ],
+        "Hauts de Bienne",
     ],
-    "Müllerstraße 74, 13349 Berlin": [
-        52.5583852,
-        13.3391068,
+    buthiers: [
+        [
+            48.2847908,
+            2.4268677,
+        ],
+        "Fontainebleau",
     ],
-    "Grünwälderstraße 16-18, 79098 Freiburg im Breisgau": [
-        47.9939874,
-        7.8506763,
+    plougoumelen: [
+        [
+            47.6525123,
+            -2.9175888,
+        ],
+        "Vannes",
     ],
-    "Bernstorffstraße 93-95, 22767 Hamburg": [
-        53.55514804002529,
-        9.957587831433871,
+    "st priest": [
+        [
+            44.7177,
+            4.54685,
+        ],
+        "Privas",
     ],
-    "Gewerbemuseumspl. 3, 90403 Nürnberg": [
-        49.452035,
-        11.0833162,
+    "beyrede jumet": [
+        [
+            42.9572552,
+            0.375641,
+        ],
+        "Beyrède-Jumet-Camous",
     ],
-    "Impasse Paradou 13009 Marseille": [
-        43.24338370762599,
-        5.399124969764321,
+    poses: [
+        [
+            49.3078259,
+            1.2387989,
+        ],
+        "Les Andelys",
     ],
-    "1, Place de la Porte de Versailles – 75015 PARIS": [
-        48.8324616,
-        2.2878537,
+    "saint avertin": [
+        [
+            47.3577,
+            0.739923,
+        ],
+        "Saint-Avertin",
     ],
-    "540 Rue du Revard, 73000 Chambéry": [
-        45.579221489413335,
-        5.906151625651489,
+    "bures/yvette": [
+        [
+            48.6972179,
+            2.1632719,
+        ],
+        "Palaiseau",
     ],
-    "71 Chemin Marial, 31470 Fonsorbes": [
-        43.54017495556086,
-        1.2288655370844244,
+    "l'argentière-la-bessée": [
+        [
+            44.7896878,
+            6.5588696,
+        ],
+        "Briançon",
     ],
-    Embrun: [
-        44.5641764,
-        6.4958189,
+    "1 rue taubenhof, 67500 haguenau": [
+        [
+            48.8022786,
+            7.8378474,
+        ],
+        "Haguenau",
     ],
-    "330 Rte du Nant Jorland, 74310 Les Houches": [
-        45.89314410604545,
-        6.787285818878673,
+    "paradis, 08350 donchery": [
+        [
+            49.7105291,
+            4.8784491,
+        ],
+        "Sedan",
     ],
-    "Rue du Haut Gazon, 57160 Moulins-lès-Metz": [
-        49.083063498301556,
-        6.108466987608716,
+    "saint-lo": [
+        [
+            49.1157004,
+            -1.0906637,
+        ],
+        "Saint-Lô",
     ],
-    "Salle Roger Lemoine, Boulevard Pasteur, 50300 Avranches": [
-        48.6773965,
-        -1.3608717594594586,
+    "la baconniere": [
+        [
+            48.1837118,
+            -0.8927821,
+        ],
+        "Mayenne",
     ],
-    "959 Av. de l'Europe, 69480 Anse": [
-        45.9348365531467,
-        4.713106680396214,
+    chaumont: [
+        [
+            48.1111324,
+            5.1395849,
+        ],
+        "Chaumont",
     ],
-    "698-700 Bois de l'ail,  Pont-Rouge,  Québec": [
-        46.71932479961929,
-        -71.72876550462993,
+    "digne les bains": [
+        [
+            44.0918144,
+            6.2351431,
+        ],
+        "Digne-les-Bains",
     ],
-    "145 Rue Jean Ferrat, Le pouzin": [
-        44.7409884,
-        4.7461529,
+    arnas: [
+        [
+            46.0235247,
+            4.7071167,
+        ],
+        "Villefranche-sur-Saône",
     ],
-    "Avenue des Chabauds 13320 Bouc-Bel-Air": [
-        43.43233282649817,
-        5.396027934300437,
+    trelissac: [
+        [
+            45.1970172,
+            0.7835042,
+        ],
+        "Périgueux",
     ],
-    "63 Av. Pasteur, 10000 Troyes": [
-        48.300464487323175,
-        4.064904591445219,
+    "dogna, 32013 belluno, italie": [
+        [
+            46.2593241,
+            12.314158,
+        ],
+        "Longarone",
     ],
-    "Gymnase de la Poterne, 91300 Massy": [
-        48.7338527,
-        2.2679508562487527,
+    "540 rue du revard, 73000 chambéry": [
+        [
+            45.579221489413335,
+            5.906151625651489,
+        ],
+        "Chambéry",
+    ],
+    "71 chemin marial, 31470 fonsorbes": [
+        [
+            43.54017495556086,
+            1.2288655370844244,
+        ],
+        "Fonsorbes",
+    ],
+    chambéry: [
+        [
+            45.5662672,
+            5.9203636,
+        ],
+        "Chambéry",
+    ],
+    fonsorbes: [
+        [
+            43.5353273,
+            1.2314988,
+        ],
+        "Fonsorbes",
+    ],
+    champforgeuil: [
+        [
+            46.8203731,
+            4.8350294,
+        ],
+        "Chalon-sur-Saône",
+    ],
+    annecy: [
+        [
+            45.8992348,
+            6.1288847,
+        ],
+        "Annecy",
+    ],
+    "468 rue de la croix verte, 34090 montpellier": [
+        [
+            43.6461162,
+            3.8396511,
+        ],
+        "Montpellier",
+    ],
+    "330 rte du nant jorland, 74310 les houches": [
+        [
+            45.89314410604545,
+            6.787285818878673,
+        ],
+        "Bonneville",
+    ],
+    "2 all. maryse hilsz, 33320 eysines": [
+        [
+            44.8594875,
+            -0.6647291,
+        ],
+        "Eysines",
+    ],
+    labroquere: [
+        [
+            43.0377,
+            0.592887,
+        ],
+        "Saint-Gaudens",
+    ],
+    "rives de l'orne, quai amiral hamelin, le port, caen, calvados, normandie, france métropolitaine, 14000, france": [
+        [
+            49.177830349999994,
+            -0.35016884514946756,
+        ],
+        "Caen",
+    ],
+    "rue du haut gazon, 57160 moulins-lès-metz": [
+        [
+            49.083063498301556,
+            6.108466987608716,
+        ],
+        "Metz",
+    ],
+    valenciennes: [
+        [
+            50.3579317,
+            3.5234846,
+        ],
+        "Valenciennes",
+    ],
+    "auvergne-rhone-alpes": [
+        [
+            45.2968119,
+            4.6604809,
+        ],
+        "Auvergne-Rhône-Alpes",
+    ],
+    "st pierre en faucigny": [
+        [
+            46.0589885,
+            6.3680865,
+        ],
+        "Bonneville",
+    ],
+    douarnenez: [
+        [
+            48.0944459,
+            -4.3311243,
+        ],
+        "Douarnenez",
+    ],
+    "noyal-sur-vilaine": [
+        [
+            48.1140789,
+            -1.5234735,
+        ],
+        "Rennes",
+    ],
+    "noyal/vilaine": [
+        [
+            48.1140789,
+            -1.5234735,
+        ],
+        "Rennes",
+    ],
+    "chateau-gontier": [
+        [
+            47.8263058,
+            -0.7066665,
+        ],
+        "Château-Gontier-sur-Mayenne",
+    ],
+    "salle roger lemoine, boulevard pasteur, 50300 avranches": [
+        [
+            48.6773965,
+            -1.3608717594594586,
+        ],
+        "Avranches",
+    ],
+    "959 av. de l'europe, 69480 anse": [
+        [
+            45.9348365531467,
+            4.713106680396214,
+        ],
+        "Villefranche-sur-Saône",
+    ],
+    "cité de l'escalade, 12 all. james joule, 26000 valence": [
+        [
+            44.8881687,
+            4.8861767,
+        ],
+        "Valence",
+    ],
+    "698-700 bois de l'ail,  pont-rouge,  québec": [
+        [
+            46.71932479961929,
+            -71.72876550462993,
+        ],
+        "Cap-Santé",
+    ],
+    "145 rue jean ferrat, le pouzin": [
+        [
+            44.7409884,
+            4.7461529,
+        ],
+        "Privas",
+    ],
+    "avenue des chabauds 13320 bouc-bel-air": [
+        [
+            43.43233282649817,
+            5.396027934300437,
+        ],
+        "Bouc-Bel-Air",
+    ],
+    bruz: [
+        [
+            48.0245814,
+            -1.7471629,
+        ],
+        "Bruz",
+    ],
+    suresnes: [
+        [
+            48.8709053,
+            2.2255727,
+        ],
+        "Suresnes",
+    ],
+    "32 rue jean pages, 33140 villenave-d'ornon": [
+        [
+            44.78090339341578,
+            -0.5657761107990554,
+        ],
+        "Villenave-d'Ornon",
+    ],
+    "63 av. pasteur, 10000 troyes": [
+        [
+            48.300464487323175,
+            4.064904591445219,
+        ],
+        "Troyes",
+    ],
+    "gottlieb-daimler-straße 6 64319 pfungstadt": [
+        [
+            49.8155724,
+            8.61087524199782,
+        ],
+        "Pfungstadt",
+    ],
+    "gymnase de la poterne, 91300 massy": [
+        [
+            48.7338527,
+            2.2679508562487527,
+        ],
+        "Massy",
+    ],
+    "1 bd léo lagrange, 49130 les ponts-de-cé": [
+        [
+            47.4319112,
+            -0.4991007483651606,
+        ],
+        "Les Ponts-de-Cé",
+    ],
+    "andrézieux bouthéon": [
+        [
+            45.5250887,
+            4.2594811,
+        ],
+        "Saint-Étienne",
     ],
     "51.5808504094211, -0.34432078465871363": [
-        51.5807064,
-        -0.3441091169327647,
+        [
+            51.5807064,
+            -0.3441091169327647,
+        ],
+        "London",
     ],
-    "11 Rue Louis Pasteur, 37550 Saint-Avertin": [
-        47.3445834,
-        0.732605,
+    "11 rue louis pasteur, 37550 saint-avertin": [
+        [
+            47.3445834,
+            0.732605,
+        ],
+        "Saint-Avertin",
     ],
-    "Keqiao, Chine": [
-        29.999991450000003,
-        120.44355104264449,
+    "keqiao, chine": [
+        [
+            29.999991450000003,
+            120.44355104264449,
+        ],
+        "绍兴市",
     ],
-    "Bd Alain Savary, 31170 Tournefeuille": [
-        43.5779696855076,
-        1.3120513576308959,
+    "bd alain savary, 31170 tournefeuille": [
+        [
+            43.5779696855076,
+            1.3120513576308959,
+        ],
+        "Tournefeuille",
     ],
-    "Wujiang, Chine": [
-        30.9943375,
-        120.59880059269469,
+    "wujiang, chine": [
+        [
+            30.9943375,
+            120.59880059269469,
+        ],
+        "苏州市",
     ],
-    "260, rue Paul Langevin 13290 AIX EN PROVENCE": [
-        43.48001417315417,
-        5.372934692456854,
+    "260, rue paul langevin 13290 aix en provence": [
+        [
+            43.48001417315417,
+            5.372934692456854,
+        ],
+        "Aix-en-Provence",
     ],
-    "28000 Chartres": [
-        48.4438601,
-        1.4881434,
+    "28000 chartres": [
+        [
+            48.4438601,
+            1.4881434,
+        ],
+        "Chartres",
     ],
-    Indonésie: [
-        -2.4833826,
-        117.8902853,
+    indonésie: [
+        [
+            -2.4833826,
+            117.8902853,
+        ],
+        "Indonesia",
     ],
-    "17260 Gémozac": [
-        45.5688319,
-        -0.6747673,
+    "17260 gémozac": [
+        [
+            45.5688319,
+            -0.6747673,
+        ],
+        "Saintes",
     ],
-    "Salt Lake City, USA": [
-        40.7596198,
-        -111.886797,
+    "salt lake city, usa": [
+        [
+            40.7596198,
+            -111.886797,
+        ],
+        "Salt Lake City",
     ],
-    "12 rue du Sauveur 39130 Clairvaux les lacs": [
-        46.572981,
-        5.7516,
+    "12 rue du sauveur 39130 clairvaux les lacs": [
+        [
+            46.572981,
+            5.7516,
+        ],
+        "Lons-le-Saunier",
     ],
-    "71, Rue Paul Albert, Saint-Pierre, Thionville, Moselle, Grand Est, France métropolitaine, 57100, France": [
-        49.358577,
-        6.144419,
+    "71, rue paul albert, saint-pierre, thionville, moselle, grand est, france métropolitaine, 57100, france": [
+        [
+            49.358577,
+            6.144419,
+        ],
+        "Thionville",
     ],
-    Prague: [
-        50.0874654,
-        14.4212535,
+    "17 av. pythagore, 33700 mérignac": [
+        [
+            44.8312129,
+            -0.6819160934003848,
+        ],
+        "Mérignac",
     ],
-    "Milly la forêt": [
-        48.4028842,
-        2.4702697,
+    prague: [
+        [
+            50.0596288,
+            14.446459273258009,
+        ],
+        "Hlavní město Praha",
     ],
-    "73 Rue des Roches, 77760 Buthiers": [
-        48.29179035,
-        2.4381258500584106,
+    "milly la forêt": [
+        [
+            48.4028842,
+            2.4702697,
+        ],
+        "Évry",
     ],
-    "Berne, Suisse": [
-        46.9484742,
-        7.4521749,
+    "73 rue des roches, 77760 buthiers": [
+        [
+            48.29179035,
+            2.4381258500584106,
+        ],
+        "Fontainebleau",
     ],
-    "Innsbruck, Autriche": [
-        47.2654296,
-        11.3927685,
+    "berne, suisse": [
+        [
+            46.9484742,
+            7.4521749,
+        ],
+        "Bern",
     ],
-    "Rue des Peupliers, Les Chères, Vaurenard, Chervinges, Gleizé, Villefranche-sur-Saône, Rhône, Auvergne-Rhône-Alpes, France métropolitaine, 69400, France": [
-        45.988825925240576,
-        4.694033750339188,
+    "innsbruck, autriche": [
+        [
+            47.2654296,
+            11.3927685,
+        ],
+        "Innsbruck",
     ],
-    "l'Argentière la Bessée - Hautes Alpes": [
-        44.7896878,
-        6.5588696,
+    "rue des peupliers, les chères, vaurenard, chervinges, gleizé, villefranche-sur-saône, rhône, auvergne-rhône-alpes, france métropolitaine, 69400, france": [
+        [
+            45.988825925240576,
+            4.694033750339188,
+        ],
+        "Villefranche-sur-Saône",
     ],
-    "La Maladrerie, 12100 Millau": [
-        44.0925575,
-        3.0798804,
+    "l'argentière la bessée - hautes alpes": [
+        [
+            44.7896878,
+            6.5588696,
+        ],
+        "Briançon",
     ],
-    Pologne: [
-        52.215933,
-        19.134422,
+    "la maladrerie, 12100 millau": [
+        [
+            44.0925575,
+            3.0798804,
+        ],
+        "Millau",
     ],
-    Chamonix: [
-        45.9246705,
-        6.8727506,
+    pologne: [
+        [
+            52.215933,
+            19.134422,
+        ],
+        "Polska",
     ],
-    "Klagenfurt, Carinthie, Autriche": [
-        46.623943,
-        14.3075976,
+    chamonix: [
+        [
+            45.9246705,
+            6.8727506,
+        ],
+        "Chamonix-Mont-Blanc",
     ],
-    "Helsinki, Helsinki sub-region, Uusimaa, Mainland Finland, Finlande": [
-        60.1674881,
-        24.9427473,
+    "klagenfurt, carinthie, autriche": [
+        [
+            46.623943,
+            14.3075976,
+        ],
+        "Klagenfurt am Wörthersee",
     ],
-    "Upravna enota Koper / Unità amministrativa Capodistria": [
-        45.528229249999995,
-        13.837242595944453,
+    "helsinki, helsinki sub-region, uusimaa, mainland finland, finlande": [
+        [
+            60.1674881,
+            24.9427473,
+        ],
+        "Helsinki",
     ],
-    "Sangam-dong, Mapo-gu, Seoul, Corée du Sud": [
-        37.57157235,
-        126.87280634672527,
+    "upravna enota koper / unità amministrativa capodistria": [
+        [
+            45.528229249999995,
+            13.837242595944453,
+        ],
+        "Upravna enota Koper / Unità amministrativa Capodistria",
     ],
-    "112 Cr Charlemagne Niveau 2, 69002 Lyon": [
-        45.7406889,
-        4.818801,
+    "sangam-dong, mapo-gu, seoul, corée du sud": [
+        [
+            37.57157235,
+            126.87280634672527,
+        ],
+        "서울특별시",
+    ],
+    migennes: [
+        [
+            47.9647312,
+            3.5225691,
+        ],
+        "Auxerre",
     ],
 }

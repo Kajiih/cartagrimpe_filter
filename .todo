@@ -6,7 +6,8 @@ Features:
     ☐ Implementing Retries
     ☐ Checking `robot.txt` for scraping
     ☐ CLI + config
-
+    ☐ Round `Trajet` to 5 min and `Distance` to 5 km
+    ☐ Enable auto edit of Google Spreadsheet
 
 Bugs:
 

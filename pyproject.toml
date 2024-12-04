@@ -96,6 +96,7 @@ exclude = []
     [tool.ruff.lint]
     preview = true
     fixable = ["ALL"]
+    logger-objects = ["loguru.logger", "cartagrimpe_filter.logger"]
     select = [
         "RUF",  # Ruff specific rules
         "PL",   # Pylint
@@ -132,6 +133,7 @@ exclude = []
         "PERF", # Perflint
         "FURB", # refurb
         # "WPS",  # wemake-python-styleguide -> Not yet supported
+        "INP",
 
     ]
     ignore = [
