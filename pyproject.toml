@@ -57,7 +57,7 @@ packages = ["src/cartagrimpe_filter"]
 
 # === Type Checking === #
 [tool.basedpyright] # https://github.com/microsoft/pyright/blob/main/docs/configuration.md or https://docs.basedpyright.com/v1.19.1/configuration/config-files/
-typeCheckingMode = "standard" # standard recommended
+typeCheckingMode = "recommended" # standard recommended
 
 pythonVersion = "3.13"
 pythonPlatform = "All"

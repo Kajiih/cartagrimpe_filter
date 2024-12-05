@@ -4,10 +4,9 @@ from __future__ import annotations
 
 import re
 import sys
-from datetime import datetime
-from enum import StrEnum
-from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, NamedTuple, TypedDict, cast
+from datetime import datetime, timedelta
+from enum import Enum, StrEnum, auto
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, NamedTuple, cast, override
 from urllib.parse import urljoin
 
 import attrs
@@ -16,20 +15,51 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 from cachier import cachier
-from geopy.geocoders import Nominatim
+from geopy import Location  # pyright:ignore[reportMissingTypeStubs]
+from geopy.geocoders import Nominatim  # pyright:ignore[reportMissingTypeStubs]
 from loguru import logger
 from requests import HTTPError, RequestException
 
+from cartagrimpe_filter.__about__ import __app_name__
 from cartagrimpe_filter.utils import get_first
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
 
-    from geopy import Location
+    from numpy.typing import NDArray
 
+
+# === Config (temp) ===
+BASE_ADDRESS = "MCJ de Migennes"
 REQUEST_TIMEOUT = 10
 EVENT_CALENDAR_URL = "https://cartagrimpe.fr/en/calendrier"
-GEOCODE_CACHE_FILE = Path("geocode_cache.json5")
+_CACHE_STALE_TIME = timedelta(weeks=4)
+
+
+# === Constants ===
+class _Auto(Enum):
+    """
+    Sentinel to indicate a value automatically set.
+
+    Can be used as type annotation with typing.Literal[AUTO] to show that a
+    value may be AUTO.
+    """
+
+    AUTO = auto()
+
+    @override
+    def __repr__(self) -> Literal["AUTO"]:
+        return "AUTO"
+
+    def __bool__(self) -> Literal[False]:
+        return False
+
+
+AUTO = _Auto.AUTO
+"""
+Sentinel to indicate a value automatically set.
+"""
+type Coordinate = tuple[float, float]
 
 
 class TableHeader(StrEnum):
@@ -53,59 +83,124 @@ class EventType(StrEnum):
     OTHER = "autre"
 
 
-class IPLocation(TypedDict):
-    """Geolocation data obtained from http://ipinfo.io."""
+@attrs.frozen
+class IPLocation:
+    """Geolocation data obtained from IP Geolocation."""
 
     lat: float
     long: float
-    loc: str
     city: str
 
+    @classmethod
+    def from_ipinfo_dict(cls, d: dict[str, Any]) -> IPLocation:
+        """Initialize from data obtained form http://ipinfo.io."""
+        lat, long = [float(x) for x in d["loc"].split(",")]
 
+        return cls(
+            lat=lat,
+            long=long,
+            city=d["city"],
+        )
+
+
+DEFAULT_IP_LOCATION_DICT = {
+    "city": "Migennes",
+    "country": "FR",
+    "hostname": "_",
+    "ip": "_",
+    "loc": "47.9655,3.5179",
+    "org": "_",
+    "postal": "89400",
+    "readme": "https://ipinfo.io/missingauth",
+    "region": "Bourgogne-Franche-Comté",
+    "timezone": "Europe/Paris",
+}
+
+DEFAULT_IP_LOCATION = IPLocation.from_ipinfo_dict(DEFAULT_IP_LOCATION_DICT)
+
+DEFAULT_LOCATION = Location(address="", point=(0, 0), raw={})
+
+
+# TODO? replace auto initializations with a single factory method
 # TODO? use cachier(pickle_reload=False) if everything runs in a single thread
 @attrs.frozen
 class Client:
-    """A client to store geolocator, geocode cache, etc."""
+    """A client to store geolocator, base location etc."""
 
     geolocator: Nominatim
-    ip_location: IPLocation | None = attrs.field(init=False)
+    base_address: str = AUTO
+    ip_location: IPLocation = attrs.field(init=False)
+    base_location: Location = attrs.field(init=False)
 
-    @ip_location.default  # pyright:ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
-    def _ip_location_factory(self) -> IPLocation | None:
-        return self.get_current_location()
+    @ip_location.default  # pyright:ignore[reportAttributeAccessIssue, reportUntypedFunctionDecorator]
+    def _ip_location_factory(self) -> IPLocation:
+        return self.get_current_ip_location()
 
-    def geocode(self, address: str) -> Location | None:
+    @base_location.default  # pyright:ignore[reportAttributeAccessIssue, reportUntypedFunctionDecorator]
+    def _base_location_factory(self) -> Location:
+        if self.base_address == AUTO:
+            coords = self.ip_location.lat, self.ip_location.long
+            location = self.reverse_geocode(coords)
+
+            # Go around frozen attribute to update base address
+            attr_name = Client.base_address.__name__  # pyright: ignore[reportAttributeAccessIssue]
+            object.__setattr__(self, attr_name, location.address)  # noqa: PLC2801
+            return location
+
+        return self.geocode(self.base_address)
+
+    @classmethod
+    def from_app_name(cls, app_name: str) -> Client:
+        """Return a client with initialized geolocator."""
+        return cls(Nominatim(user_agent=app_name))
+
+    @property
+    def base_coords(self) -> Coordinate:
+        """Coordinates of the base location."""
+        return (self.base_location.latitude, self.base_location.longitude)
+
+    def geocode(self, address: str) -> Location:
         """Return the geocoded location of the given address."""
         return self._geocode_normalized(self.normalize_address(address))
 
-    @cachier()
-    def _geocode_normalized(self, address: str) -> Location | None:
+    @cachier(stale_after=_CACHE_STALE_TIME)
+    def _geocode_normalized(self, address: str) -> Location:
         logger.debug(f"Address '{address}' not found in cache.")
 
         try:
             location: Location | None = self.geolocator.geocode(address, addressdetails=True)  # pyright: ignore[reportAssignmentType]
         except Exception:
-            logger.exception(f"Exception during geocoding address '{address}'")
-            return None
+            logger.exception(
+                f"Exception during geocoding address '{address}'. Falling back to default location."
+            )
+            return DEFAULT_LOCATION
 
         if location is None:
-            logger.warning(f"Geocoding failed for address: {address}")
+            logger.warning(
+                f"Geocoding failed for address: {address}. Falling back to default location."
+            )
+            return DEFAULT_LOCATION
 
         return location
 
-    @cachier()
-    def reverse_geocode(self, coords: Coordinate) -> Location | None:
+    @cachier(stale_after=_CACHE_STALE_TIME)
+    def reverse_geocode(self, coords: Coordinate) -> Location:
         """Return the location corresponding to the coordinates."""
         logger.debug(f"Coordinates '{coords}' not found in cache.")
 
         try:
             location: Location | None = self.geolocator.reverse(coords, addressdetails=True)  # pyright: ignore[reportAssignmentType]
         except Exception:
-            logger.exception(f"Exception during reverse geocoding address '{coords}'")
-            return None
+            logger.exception(
+                f"Exception during reverse geocoding address '{coords}'. Falling back to default location."
+            )
+            return DEFAULT_LOCATION
 
         if location is None:
-            logger.warning(f"Reverse geocoding failed for coordinates: {coords}")
+            logger.warning(
+                f"Reverse geocoding failed for coordinates: {coords}. Falling back to default location."
+            )
+            return DEFAULT_LOCATION
 
         return location
 
@@ -131,21 +226,23 @@ class Client:
         return address
 
     @staticmethod
-    def get_current_location() -> IPLocation | None:
+    def get_current_ip_location() -> IPLocation:
         """Get the current location based on the IP address."""
         try:
             response = requests.get("https://ipinfo.io/json", timeout=REQUEST_TIMEOUT)
             response.raise_for_status()
         except (RequestException, HTTPError):
-            logger.exception(f"Error fetching IP Geolocation")
-            return None
+            logger.exception(f"Error fetching IP Geolocation. Falling back to default IP location.")
+            return DEFAULT_IP_LOCATION
 
-        data: IPLocation = response.json()
-        data["lat"], data["long"] = [float(x) for x in data["loc"].split(",")]
+        ip_location = IPLocation.from_ipinfo_dict(response.json())
+        logger.debug(f"Detected current location: ({ip_location.city})")
 
-        logger.debug(f"Detected current location: ({data['city']})")
+        return ip_location
 
-        return data
+    def get_table_matrices(self, destinations: list[Coordinate]) -> TableMatrices:
+        """Return the distance and duration matrices with the client base coordinates as source."""
+        return get_table_matrices([self.base_coords], destinations)
 
 
 @attrs.frozen
@@ -160,10 +257,10 @@ class Event:
     timestamp_start: float
     timestamp_end: float
     type: EventType
-    location: Location | None = attrs.field(init=False, repr=False)
+    location: Location = attrs.field(init=False, repr=False)
 
-    @location.default  # pyright:ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
-    def _location_factory(self) -> Location | None:
+    @location.default  # pyright:ignore[reportAttributeAccessIssue,reportUntypedFunctionDecorator]
+    def _location_factory(self) -> Location:
         return self.client.geocode(self.original_address)
 
     @classmethod
@@ -205,13 +302,6 @@ class Event:
             timestamp_end=timestamp_end,
             type=event_type,
         )
-
-
-BOLD = "\033[1m"
-CYAN = "\033[36m"
-RESET = "\033[0m"
-
-type Coordinate = tuple[float, float]
 
 
 def get_next_page_url(soup: BeautifulSoup) -> str | None:
@@ -323,8 +413,8 @@ def add_geocodes(df: pd.DataFrame, geolocator: Nominatim, cache: dict) -> pd.Dat
 class TableMatrices(NamedTuple):
     """Tuple of distance and duration matrices."""
 
-    distance: np.ndarray
-    duration: np.ndarray
+    distance: NDArray[np.int_]
+    duration: NDArray[np.int_]
 
 
 def get_table_matrices(  # noqa: PLR0914
@@ -334,19 +424,19 @@ def get_table_matrices(  # noqa: PLR0914
     OSRM_API_URL = "http://router.project-osrm.org/table/v1/driving"
     BATCH_SIZE = 250
 
-    def batch[T: Sequence](seq: T, n: int) -> Iterator[T]:
+    def batch[S: Sequence[Any]](seq: S, n: int) -> Iterator[S]:
         l = len(seq)
         for ndx in range(0, l, n):
-            yield cast("T", seq[ndx : min(ndx + n, l)])
+            yield seq[ndx : min(ndx + n, l)]  # pyright: ignore[reportReturnType]
 
     distance_matrix = np.full((len(sources), len(destinations)), None)
     duration_matrix = np.full((len(sources), len(destinations)), None)
 
     i = 0
-    for source_batch in batch(sources, BATCH_SIZE):
+    for source_batch in batch(sources, BATCH_SIZE - 1):
         nb_sources = len(source_batch)
         j = 0
-        for destination_batch in batch(destinations, BATCH_SIZE - nb_sources + 1):
+        for destination_batch in batch(destinations, BATCH_SIZE - nb_sources):
             nb_destinations = len(destination_batch)
             # Format coordinates for OSRM API
             source_indexes = ";".join(map(str, range(nb_sources)))
@@ -395,8 +485,8 @@ def compute_distances(df: pd.DataFrame, source_coords: Coordinate) -> pd.DataFra
     table_matrices = get_table_matrices([source_coords], destination_coords)
 
     # Extract durations and distances from OSRM response
-    durations: np.ndarray = table_matrices.duration[0]
-    distances: np.ndarray = table_matrices.distance[0]
+    durations: NDArray[np.int_] = table_matrices.duration[0]
+    distances: NDArray[np.int_] = table_matrices.distance[0]
 
     def format_duration(s: int) -> str:
         hours, remainder = divmod(s, 3600)
@@ -414,13 +504,12 @@ def compute_distances(df: pd.DataFrame, source_coords: Coordinate) -> pd.DataFra
     return df
 
 
-@logger.catch(reraise=True)
-def main() -> None:  # noqa: PLR0915
-    """Scrap and filter events from Cartagrimpe."""
+def setup_logging() -> None:
+    """Set up the logging properly."""
     logger.remove()
     logger.add(
         "logs/app.log",
-        level="TRACE",
+        level="DEBUG",
         rotation="1 week",
         compression="zip",
     )
@@ -431,10 +520,14 @@ def main() -> None:  # noqa: PLR0915
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>",
     )
 
-    # Initialize geolocator
-    geolocator = Nominatim(user_agent="climbing_events_scraper")
-    geocode_cache = load_geocode_cache()
-    Event.client = Client(geolocator, geocode_cache)
+
+@logger.catch(reraise=True)
+def main() -> None:
+    """Scrap and filter events from Cartagrimpe."""
+    setup_logging()
+
+    # Initialize geolocator client
+    Event.client = client = Client.from_app_name(__app_name__)
 
     # Scrap events
     logger.info("Scrapping events...")
@@ -442,49 +535,9 @@ def main() -> None:  # noqa: PLR0915
     events = scrap_events(EVENT_CALENDAR_URL, start_date=start_date, nb_pages=None)
     logger.info(f"Found {len(events)} events")
 
-    # Filter by type
-    filtered_out_types = {EventType.FILM, EventType.GATHERING}
-    events = [event for event in events if event.type not in filtered_out_types]
-    logger.info(f"{len(events)} events remaining after filtering out {filtered_out_types}")
+    destinations = [(event.location.latitude, event.location.longitude) for event in events]
 
     df_events = pd.DataFrame([attrs.asdict(event) for event in events])
-
-    # Geocode event addresses
-    logger.debug("Starting geocoding of event addresses...")
-    df_events = add_geocodes(df_events, geolocator, geocode_cache)
-
-    # Get current location
-    current_location = get_current_location()
-    if current_location:
-        # Format the default address
-        default_address = find_address(current_location, geolocator)
-        user_input = input(
-            f"\nDetected current location: {CYAN}{default_address}{RESET}\n"
-            "Press Enter to use this location or enter a different address: "
-        ).strip()
-        if user_input:
-            base_address = user_input
-            base_location = geocode_address(base_address, geolocator, geocode_cache)
-            if not base_location:
-                logger.error(f"Failed to geocode base location: {base_address}")
-                print(f"Failed to geocode base location: {base_address}")
-                return
-            base_coords = base_location.coords
-        else:
-            # Use detected coordinates as base_coords
-            base_coords = current_location
-    else:
-        # If detection failed, prompt the user to enter the address
-        base_address = input("Enter your base location address (e.g., 'Paris, France'): ").strip()
-        base_location = geocode_address(base_address, geolocator, geocode_cache)
-        # TODO: Print Detailed address found
-        if not base_location:
-            logger.error(f"Failed to geocode base location: {base_address}")
-            print(f"Failed to geocode base location: {base_address}")
-            return
-        base_coords = base_location.coords
-
-    save_geocode_cache(geocode_cache)
 
     # Compute distances
     logger.debug("Computing distances from base location to events...")
