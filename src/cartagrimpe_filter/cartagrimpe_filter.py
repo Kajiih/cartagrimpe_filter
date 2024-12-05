@@ -4,22 +4,23 @@ from __future__ import annotations
 
 import re
 import sys
-import time
-from datetime import datetime, timedelta
-from enum import StrEnum, auto
+from datetime import datetime
+from enum import StrEnum
 from pathlib import Path
-from typing import TYPE_CHECKING, NamedTuple, cast, reveal_type
+from typing import TYPE_CHECKING, ClassVar, NamedTuple, TypedDict, cast
 from urllib.parse import urljoin
 
 import attrs
-import json5
 import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
+from cachier import cachier
 from geopy.geocoders import Nominatim
 from loguru import logger
 from requests import HTTPError, RequestException
+
+from cartagrimpe_filter.utils import get_first
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
@@ -31,29 +32,139 @@ EVENT_CALENDAR_URL = "https://cartagrimpe.fr/en/calendrier"
 GEOCODE_CACHE_FILE = Path("geocode_cache.json5")
 
 
+class TableHeader(StrEnum):
+    """Headers of the formatted data table."""
+
+    DATE = "Date"
+    NAME = "Nom"
+    PLACE = "Lieu"
+    ADDRESS = "Adresse"
+    DISTANCE = "Distance"
+    DURATION = "Duration"
+
+
 class EventType(StrEnum):
     """Types of events."""
 
-    CONTEST = auto()
+    CONTEST = "contest"
     COMPETITION = "compétition"
-    FILM = auto()
+    FILM = "film"
     GATHERING = "rassemblement"
     OTHER = "autre"
 
 
-# @attrs.frozen
-@attrs.define
+class IPLocation(TypedDict):
+    """Geolocation data obtained from http://ipinfo.io."""
+
+    lat: float
+    long: float
+    loc: str
+    city: str
+
+
+# TODO? use cachier(pickle_reload=False) if everything runs in a single thread
+@attrs.frozen
+class Client:
+    """A client to store geolocator, geocode cache, etc."""
+
+    geolocator: Nominatim
+    ip_location: IPLocation | None = attrs.field(init=False)
+
+    @ip_location.default  # pyright:ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
+    def _ip_location_factory(self) -> IPLocation | None:
+        return self.get_current_location()
+
+    def geocode(self, address: str) -> Location | None:
+        """Return the geocoded location of the given address."""
+        return self._geocode_normalized(self.normalize_address(address))
+
+    @cachier()
+    def _geocode_normalized(self, address: str) -> Location | None:
+        logger.debug(f"Address '{address}' not found in cache.")
+
+        try:
+            location: Location | None = self.geolocator.geocode(address, addressdetails=True)  # pyright: ignore[reportAssignmentType]
+        except Exception:
+            logger.exception(f"Exception during geocoding address '{address}'")
+            return None
+
+        if location is None:
+            logger.warning(f"Geocoding failed for address: {address}")
+
+        return location
+
+    @cachier()
+    def reverse_geocode(self, coords: Coordinate) -> Location | None:
+        """Return the location corresponding to the coordinates."""
+        logger.debug(f"Coordinates '{coords}' not found in cache.")
+
+        try:
+            location: Location | None = self.geolocator.reverse(coords, addressdetails=True)  # pyright: ignore[reportAssignmentType]
+        except Exception:
+            logger.exception(f"Exception during reverse geocoding address '{coords}'")
+            return None
+
+        if location is None:
+            logger.warning(f"Reverse geocoding failed for coordinates: {coords}")
+
+        return location
+
+    @staticmethod
+    def normalize_address(address: str) -> str:
+        """
+        Normalize the address by removing unnecessary components and standardizing formatting.
+
+        Args:
+            address: The raw address string.
+
+        Returns:
+            The normalized address string.
+        """
+        # Remove "Niveau" and any following number
+        address = re.sub(r"Niveau\s*\d+", "", address, flags=re.IGNORECASE)
+
+        # Replace Cr by Cours
+        address = re.sub(r"\bCr\b", "Cours", address)
+
+        address = address.strip().lower()
+
+        return address
+
+    @staticmethod
+    def get_current_location() -> IPLocation | None:
+        """Get the current location based on the IP address."""
+        try:
+            response = requests.get("https://ipinfo.io/json", timeout=REQUEST_TIMEOUT)
+            response.raise_for_status()
+        except (RequestException, HTTPError):
+            logger.exception(f"Error fetching IP Geolocation")
+            return None
+
+        data: IPLocation = response.json()
+        data["lat"], data["long"] = [float(x) for x in data["loc"].split(",")]
+
+        logger.debug(f"Detected current location: ({data['city']})")
+
+        return data
+
+
+@attrs.frozen
 class Event:
     """An event."""
 
-    name: str = attrs.field()
+    client: ClassVar[Client]
+
+    name: str
     url: str
-    address: str
-    date_start: str
-    date_end: str
+    original_address: str
     timestamp_start: float
     timestamp_end: float
     type: EventType
+    location: Location | None = attrs.field(init=False, repr=False)
+
+    @location.default  # pyright:ignore[reportAttributeAccessIssue, reportOptionalMemberAccess]
+    def _location_factory(self) -> Location | None:
+        return self.client.geocode(self.original_address)
 
     @classmethod
     def from_event_div(cls, tag: Tag) -> Event:  # noqa: PLR0914
@@ -64,7 +175,7 @@ class Event:
 
         # URL
         url_tag = tag.find("a", href=True)
-        url = url_tag["href"] if url_tag else "N/A"  # pyright: ignore[reportArgumentType]
+        url = cast("str", url_tag["href"]) if url_tag else "N/A"  # pyright: ignore[reportArgumentType]
 
         # Extract address
         address_text = tag.find(string=re.compile(r"Address:", re.IGNORECASE))
@@ -77,7 +188,7 @@ class Event:
 
         # Extract date string
         date_text = tag.find(string=re.compile(r"From", re.IGNORECASE))
-        # Example format: "From 14/01/2024 to 14/01/2024"
+        # Example format: "From 14/01/2024 to 15/01/2024"
         date_parts = date_text.replace("From", "").split("to") if date_text else ""  # pyright: ignore[reportOptionalCall, reportAttributeAccessIssue]
         date_start = date_parts[0].strip()
         date_end = date_parts[1].strip() if len(date_parts) > 1 else date_start
@@ -88,10 +199,8 @@ class Event:
 
         return cls(
             name=name,
-            url=url,  # pyright: ignore[reportArgumentType]
-            address=address,
-            date_start=date_start,
-            date_end=date_end,
+            url=url,
+            original_address=address,
             timestamp_start=timestamp_start,
             timestamp_end=timestamp_end,
             type=event_type,
@@ -161,142 +270,22 @@ def scrap_events(
     return all_events
 
 
-def get_current_location() -> Coordinate | None:
-    """Get the current location based on the IP address using ip-api.com."""
-    try:
-        response = requests.get("http://ip-api.com/json/", timeout=REQUEST_TIMEOUT)
-        response.raise_for_status()
-    except (RequestException, HTTPError):
-        logger.exception(f"Error fetching IP Geolocation")
-        return None
-
-    data = response.json()
-    latitude = data["lat"]
-    longitude = data["lon"]
-    logger.debug(f"Detected current location: ({latitude}, {longitude})")
-
-    return (latitude, longitude)
-
-
-def normalize_address(address: str) -> str:
-    """
-    Normalize the address by removing unnecessary components and standardizing formatting.
-
-    Args:
-        address: The raw address string.
-
-    Returns:
-        The normalized address string.
-    """
-    # Remove "Niveau" and any following number
-    address = re.sub(r"Niveau\s*\d+", "", address, flags=re.IGNORECASE)
-
-    # Replace Cr by Cours
-    address = re.sub(r"\bCr\b", "Cours", address)
-
-    # Trim whitespace
-    address = address.strip()
-
-    return address
-
-
-def get_city[T](location: Location, default: T = None) -> str | T:
+def get_city(location: Location) -> str:
     """Return the city or state/country if city is unavailable."""
-    raw_address = location.raw["address"]
-    keys = ["city", "town", "municipality", "village", "state", "country"]
-
-    # Return the first non-None value from raw_address
-    return next((raw_address.get(key) for key in keys if raw_address.get(key) is not None), default)
+    return get_first(
+        location.raw["address"], ["city", "town", "municipality", "village", "state", "country"]
+    )
 
 
-def get_amenity[T](location: Location, default: T = None) -> str | T:
-    """Return the amenity or house number if city is unavailable."""
-    raw_address = location.raw["address"]
-    keys = ["amenity", "house_number"]
-
-    # Return the first non-None value from raw_address
-    return next((raw_address.get(key) for key in keys if raw_address.get(key) is not None), default)
+def get_amenity(location: Location) -> str:
+    """Return the location name or house number."""
+    return get_first(location.raw["address"], ["amenity", "house_number"])
 
 
-def find_address(coordinate: Coordinate, geolocator: Nominatim) -> str:
-    """Return the address string given the coordinate."""
-    location: Location = geolocator.reverse(coordinate)  # pyright: ignore[reportAssignmentType]
-
-    def format_address(location: Location) -> str:
-        address = location.raw["address"]
-        return f"{get_amenity(location)}, {address['road']}, {get_city(location)}, {address['country']}"
-
-    return format_address(location)
-
-
-def load_geocode_cache() -> dict:
-    """
-    Load the geocode cache from a JSON file.
-
-    Returns:
-        A dictionary mapping addresses to their (latitude, longitude).
-    """
-    if not GEOCODE_CACHE_FILE.exists():
-        return {}
-
-    with GEOCODE_CACHE_FILE.open() as f:
-        return json5.load(f)
-
-
-def save_geocode_cache(cache: dict) -> None:
-    """
-    Save the geocode cache to a JSON file.
-
-    Args:
-        cache: The cache dictionary to save.
-    """
-    with GEOCODE_CACHE_FILE.open("w") as f:
-        json5.dump(cache, f, indent=4, ensure_ascii=False)
-    logger.debug(f"Geocode cache saved to {GEOCODE_CACHE_FILE}.")
-
-
-class CoordTown(NamedTuple):
-    """Tuple containing coordinate and the town they represent."""
-
-    coords: Coordinate
-    city: str
-
-
-# TODO? Add failed geocoding to cache ?
-def geocode_address(
-    address: str, geolocator: Nominatim, cache: dict[str, CoordTown]
-) -> CoordTown | None:
-    """Geocode the given address and return the coordinate with a persistent cache."""
-    address = normalize_address(address)
-    # Check cache
-    cached_address = address.lower()
-    if hit := cache.get(cached_address):
-        logger.debug(f"Address '{address}' found in cache.")
-        return CoordTown(hit[0], hit[1])
-
-    # Geocode
-    logger.warning(f"Address '{address}' not found in cache.")
-    try:
-        location: Location = geolocator.geocode(address, addressdetails=True)  # pyright: ignore[reportAssignmentType]
-    except Exception:
-        logger.exception(f"Exception during geocoding address '{address}'")
-        return None
-
-    if not location:
-        logger.warning(f"Geocoding failed for address: {address}")
-        return None
-
-    coords = (location.latitude, location.longitude)
-
-    city = get_city(location)
-    if city is None:
-        print("NO")
-    assert city is not None
-
-    logger.debug(f"Geocoded '{address}' to {coords}")
-    cache[cached_address] = CoordTown(coords, city)
-
-    return CoordTown((location.latitude, location.longitude), city)
+def get_address_short(location: Location) -> str:
+    """Return a short address."""
+    address = location.raw["address"]
+    return f"{get_amenity(location)}, {address['road']}, {get_city(location)}, {address['country']}"
 
 
 def add_geocodes(df: pd.DataFrame, geolocator: Nominatim, cache: dict) -> pd.DataFrame:
@@ -442,6 +431,11 @@ def main() -> None:  # noqa: PLR0915
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>",
     )
 
+    # Initialize geolocator
+    geolocator = Nominatim(user_agent="climbing_events_scraper")
+    geocode_cache = load_geocode_cache()
+    Event.client = Client(geolocator, geocode_cache)
+
     # Scrap events
     logger.info("Scrapping events...")
     start_date = datetime.today().strftime("%Y-%m-%d")
@@ -455,12 +449,8 @@ def main() -> None:  # noqa: PLR0915
 
     df_events = pd.DataFrame([attrs.asdict(event) for event in events])
 
-    # Initialize geolocator
-    geolocator = Nominatim(user_agent="climbing_events_scraper")
-
     # Geocode event addresses
     logger.debug("Starting geocoding of event addresses...")
-    geocode_cache = load_geocode_cache()
     df_events = add_geocodes(df_events, geolocator, geocode_cache)
 
     # Get current location
@@ -524,7 +514,7 @@ def main() -> None:  # noqa: PLR0915
             Event.name.__name__: "Nom",  # pyright:ignore[reportAttributeAccessIssue]
             Event.url.__name__: "Lien",  # pyright:ignore[reportAttributeAccessIssue]
             Event.type.__name__: "Type d'évènement",
-            Event.address.__name__: "Adresse",  # pyright:ignore[reportAttributeAccessIssue]
+            Event.original_address.__name__: "Adresse",  # pyright:ignore[reportAttributeAccessIssue]
         }
     )
     # Add hyperlink

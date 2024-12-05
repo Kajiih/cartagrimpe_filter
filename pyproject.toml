@@ -27,7 +27,7 @@ dependencies = [
     "attrs>=24.2.0",
     "loguru>=0.7.2",
     "geopy>=2.4.1",
-    "json5>=0.10.0",
+    "cachier>=3.1.2",
 ]
 
 
@@ -67,6 +67,7 @@ strictDictionaryInference = true
 strictSetInference = true
 analyzeUnannotatedFunctions = true
 strictParameterNoneValue = true
+reportUnnecessaryTypeIgnoreComment = true
 
 deprecateTypingAliases = true
 
