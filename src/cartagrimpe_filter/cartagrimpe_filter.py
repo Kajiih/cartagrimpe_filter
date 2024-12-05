@@ -6,7 +6,16 @@ import re
 import sys
 from datetime import datetime, timedelta
 from enum import Enum, StrEnum, auto
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, NamedTuple, cast, override
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Literal,
+    NamedTuple,
+    TypedDict,
+    cast,
+    override,
+)
 from urllib.parse import urljoin
 
 import attrs
@@ -31,6 +40,7 @@ if TYPE_CHECKING:
 
 # === Config (temp) ===
 BASE_ADDRESS = "MCJ de Migennes"
+OUTPUT_FILE = "climbing_events.csv"
 REQUEST_TIMEOUT = 10
 EVENT_CALENDAR_URL = "https://cartagrimpe.fr/en/calendrier"
 _CACHE_STALE_TIME = timedelta(weeks=4)
@@ -240,9 +250,15 @@ class Client:
 
         return ip_location
 
-    def get_table_matrices(self, destinations: list[Coordinate]) -> TableMatrices:
-        """Return the distance and duration matrices with the client base coordinates as source."""
-        return get_table_matrices([self.base_coords], destinations)
+    def request_table_lists(self, destinations: list[Coordinate]) -> TableMatrices:
+        """Return the distance and duration lists with the client base coordinates as source."""
+        table_matrices = request_table_matrices([self.base_coords], destinations)
+
+        return TableMatrices(table_matrices.distance[0], table_matrices.duration[0])
+
+
+class EventDict(TypedDict):
+    """Dictionary of curated and formatted event attributes."""
 
 
 @attrs.frozen
@@ -302,6 +318,15 @@ class Event:
             timestamp_end=timestamp_end,
             type=event_type,
         )
+
+    def as_table_dict(self) -> dict[str, Any]:
+        """Return a dict representation formatted with table columns."""
+        return {
+            TableHeader.DATE: self.timestamp_start,
+            TableHeader.NAME: f'=HYPERLINK("{self.url}"; "{self.name}")',
+            TableHeader.PLACE: get_city(self.location),
+            TableHeader.ADDRESS: get_address_short(self.location),
+        }
 
 
 def get_next_page_url(soup: BeautifulSoup) -> str | None:
@@ -411,13 +436,17 @@ def add_geocodes(df: pd.DataFrame, geolocator: Nominatim, cache: dict) -> pd.Dat
 
 
 class TableMatrices(NamedTuple):
-    """Tuple of distance and duration matrices."""
+    """
+    Tuple of distance and duration matrices.
+
+    Also represents tuple of distance and duration lists.
+    """
 
     distance: NDArray[np.int_]
     duration: NDArray[np.int_]
 
 
-def get_table_matrices(  # noqa: PLR0914
+def request_table_matrices(  # noqa: PLR0914
     sources: list[Coordinate], destinations: list[Coordinate]
 ) -> TableMatrices:
     """Request distance and duration matrix from the OSRM API."""
@@ -482,14 +511,14 @@ def compute_distances(df: pd.DataFrame, source_coords: Coordinate) -> pd.DataFra
     # Collect coordinates to be sent to OSRM API
     destination_coords = list(zip(df["latitude"], df["longitude"], strict=False))
 
-    table_matrices = get_table_matrices([source_coords], destination_coords)
+    table_matrices = request_table_matrices([source_coords], destination_coords)
 
     # Extract durations and distances from OSRM response
     durations: NDArray[np.int_] = table_matrices.duration[0]
     distances: NDArray[np.int_] = table_matrices.distance[0]
 
-    def format_duration(s: int) -> str:
-        hours, remainder = divmod(s, 3600)
+    def format_duration(seconds: int) -> str:
+        hours, remainder = divmod(seconds, 3600)
         minutes, _ = divmod(remainder, 60)
         return f"{hours}h {minutes:02d}m"
 
@@ -505,7 +534,7 @@ def compute_distances(df: pd.DataFrame, source_coords: Coordinate) -> pd.DataFra
 
 
 def setup_logging() -> None:
-    """Set up the logging properly."""
+    """Set up logging in log file and consol."""
     logger.remove()
     logger.add(
         "logs/app.log",
@@ -535,55 +564,18 @@ def main() -> None:
     events = scrap_events(EVENT_CALENDAR_URL, start_date=start_date, nb_pages=None)
     logger.info(f"Found {len(events)} events")
 
+    events_df = pd.DataFrame(event.as_table_dict() for event in events)
+
+    # Compute  distances and durations from the base location
     destinations = [(event.location.latitude, event.location.longitude) for event in events]
+    table_matrices = client.request_table_lists(destinations=destinations)
 
-    df_events = pd.DataFrame([attrs.asdict(event) for event in events])
-
-    # Compute distances
-    logger.debug("Computing distances from base location to events...")
-    df_events = compute_distances(df_events, base_coords)
-
-    # Export full data
-    df_events.to_csv("climbing_events_full.csv", index=False)
-
-    # Filter by distance
-    # max_distance = float(input("Enter the maximum Distance to filter events: ") or 200)
-    max_distance = 200
-
-    df_filtered = df_events[df_events["Distance"] <= max_distance].copy()
-    logger.info(f"Filtered down to {len(df_filtered)} events within {max_distance} km.")
-
-    if df_filtered.empty:
-        print("No events found within the specified distance.")
-        return
-
-    df_filtered = df_events
+    events_df[TableHeader.DISTANCE] = table_matrices.distance
+    events_df[TableHeader.DURATION] = table_matrices.duration
 
     # Export
-    output_file = "climbing_events.csv"
-    df_filtered = df_filtered.rename(
-        columns={
-            Event.date_start.__name__: "Date",  # pyright:ignore[reportAttributeAccessIssue]
-            Event.name.__name__: "Nom",  # pyright:ignore[reportAttributeAccessIssue]
-            Event.url.__name__: "Lien",  # pyright:ignore[reportAttributeAccessIssue]
-            Event.type.__name__: "Type d'évènement",
-            Event.original_address.__name__: "Adresse",  # pyright:ignore[reportAttributeAccessIssue]
-        }
-    )
-    # Add hyperlink
-    df_filtered["Nom"] = df_filtered.apply(
-        lambda row: f'=HYPERLINK("{row["Lien"]}"; "{row["Nom"]}")', axis=1
-    )
-    df_filtered["Distance"] = df_filtered["Distance"].map(
-        lambda x: f"{int(x)}" if (x is not None and not np.isnan(x)) else ""
-    )
-
-    df_filtered = df_filtered[["Date", "Nom", "Ville", "Adresse", "Distance", "Trajet"]]
-    df_filtered.sort_values("Trajet", inplace=True)
-    df_filtered.to_csv(output_file, index=False)
-
-    logger.info(f"Exported filtered events to {output_file}.")
-    print(f"Exported filtered events to {output_file}.")
+    logger.info(f"Exported filtered events to {OUTPUT_FILE}.")
+    print(f"Exported filtered events to {OUTPUT_FILE}.")
 
 
 if __name__ == "__main__":
