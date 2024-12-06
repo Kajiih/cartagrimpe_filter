@@ -30,6 +30,10 @@ pip install cartagrimpe-filter
 
 ## 🏃 Getting Started
 
+In google sheet:
+
+- Import -> Replace active sheet on the raw data sheet.
+
 [Documentation](https://cartagrimpe-filter.readthedocs.io)
 
 <!-- ## 📔 Citation -->

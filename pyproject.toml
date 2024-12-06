@@ -9,7 +9,7 @@ description = "Use Cartagrimpe data to find climbing events near you."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.13"
-keywords = ["python"]                                                  # TODO: Add these
+keywords = ["python", "scrapping", "automation", "climbing"]           # TODO: Add these
 
 classifiers = [ # https://pypi.org/classifiers/
     "Development Status :: 2 - Pre-Alpha",
