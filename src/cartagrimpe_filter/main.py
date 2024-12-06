@@ -75,12 +75,13 @@ type Coordinate = tuple[float, float]
 class TableHeader(StrEnum):
     """Headers of the formatted data table."""
 
-    DATE = "Date"
+    DATE = "Date (timestamp)"
     NAME = "Nom"
     PLACE = "Lieu"
     ADDRESS = "Adresse"
-    DISTANCE = "Distance"
-    DURATION = "Duration"
+    DISTANCE = "Distance (m)"
+    DURATION = "Trajet (s)"
+    TYPE = "Type"
 
 
 class EventType(StrEnum):
@@ -139,6 +140,7 @@ class Client:
 
     geolocator: Nominatim
     base_address: str = AUTO
+    today_date: str = attrs.field(init=False, factory=lambda: datetime.today().strftime("%Y-%m-%d"))
     ip_location: IPLocation = attrs.field(init=False)
     base_location: Location = attrs.field(init=False)
 
@@ -326,6 +328,7 @@ class Event:
             TableHeader.NAME: f'=HYPERLINK("{self.url}"; "{self.name}")',
             TableHeader.PLACE: get_city(self.location),
             TableHeader.ADDRESS: get_address_short(self.location),
+            TableHeader.TYPE: self.type,
         }
 
 
@@ -385,14 +388,14 @@ def scrap_events(
     return all_events
 
 
-def get_city(location: Location) -> str:
+def get_city(location: Location) -> str | None:
     """Return the city or state/country if city is unavailable."""
     return get_first(
         location.raw["address"], ["city", "town", "municipality", "village", "state", "country"]
     )
 
 
-def get_amenity(location: Location) -> str:
+def get_amenity(location: Location) -> str | None:
     """Return the location name or house number."""
     return get_first(location.raw["address"], ["amenity", "house_number"])
 
@@ -400,39 +403,10 @@ def get_amenity(location: Location) -> str:
 def get_address_short(location: Location) -> str:
     """Return a short address."""
     address = location.raw["address"]
-    return f"{get_amenity(location)}, {address['road']}, {get_city(location)}, {address['country']}"
+    address_split = [get_amenity(location), address.get("road"), get_city(location)]
+    address_split = [x for x in address_split if x]
 
-
-def add_geocodes(df: pd.DataFrame, geolocator: Nominatim, cache: dict) -> pd.DataFrame:
-    """
-    Add latitude and longitude columns to the DataFrame by geocoding addresses.
-
-    Args:
-        df: The DataFrame containing event addresses.
-        geolocator: The geolocator instance.
-        cache: The geocode cache.
-
-    Returns:
-        The DataFrame with added 'latitude' and 'longitude' columns.
-    """
-    latitudes = []
-    longitudes = []
-    cities = []
-    for address in df["address"]:
-        if address != "N/A" and (location := geocode_address(address, geolocator, cache)):
-            coords = location.coords
-            latitudes.append(coords[0])
-            longitudes.append(coords[1])
-            cities.append(location.city)
-        else:
-            latitudes.append(None)
-            longitudes.append(None)
-            cities.append(None)
-    df["latitude"] = latitudes
-    df["longitude"] = longitudes
-    df["Ville"] = cities
-
-    return df
+    return ", ".join(address_split) if address_split else address["country"]
 
 
 class TableMatrices(NamedTuple):
@@ -442,8 +416,8 @@ class TableMatrices(NamedTuple):
     Also represents tuple of distance and duration lists.
     """
 
-    distance: NDArray[np.int_]
-    duration: NDArray[np.int_]
+    distance: NDArray[np.float64]
+    duration: NDArray[np.float64]
 
 
 def request_table_matrices(  # noqa: PLR0914
@@ -488,49 +462,13 @@ def request_table_matrices(  # noqa: PLR0914
 
             # Fill the matrices
             matrix_slice = (slice(i, i + nb_sources), slice(j, j + nb_destinations))
-            distance_matrix[matrix_slice] = np.asarray(data["distances"])
-            duration_matrix[matrix_slice] = np.asarray(data["durations"])
+            distance_matrix[matrix_slice] = np.asarray(data["distances"], dtype=float)
+            duration_matrix[matrix_slice] = np.asarray(data["durations"], dtype=float)
 
             j += nb_destinations
         i += nb_sources
 
     return TableMatrices(distance_matrix, duration_matrix)
-
-
-def compute_distances(df: pd.DataFrame, source_coords: Coordinate) -> pd.DataFrame:
-    """
-    Compute distances and durations from the source coordinate to each event using OSRM API.
-
-    Args:
-        df: The DataFrame containing event coordinates.
-        source_coords: The coordinates of the source.
-
-    Returns:
-        The DataFrame with added 'distance_km' and 'duration_sec' columns.
-    """
-    # Collect coordinates to be sent to OSRM API
-    destination_coords = list(zip(df["latitude"], df["longitude"], strict=False))
-
-    table_matrices = request_table_matrices([source_coords], destination_coords)
-
-    # Extract durations and distances from OSRM response
-    durations: NDArray[np.int_] = table_matrices.duration[0]
-    distances: NDArray[np.int_] = table_matrices.distance[0]
-
-    def format_duration(seconds: int) -> str:
-        hours, remainder = divmod(seconds, 3600)
-        minutes, _ = divmod(remainder, 60)
-        return f"{hours}h {minutes:02d}m"
-
-    # df["Trajet"] = str(timedelta(seconds=durations))
-    df["Trajet"] = [
-        format_duration(int(duration)) if duration is not None else None for duration in durations
-    ]
-    df["Distance"] = [
-        distance / 1000 if distance is not None else None for distance in distances
-    ]  # Convert meters to kilometers
-
-    return df
 
 
 def setup_logging() -> None:
@@ -545,7 +483,8 @@ def setup_logging() -> None:
 
     logger.add(
         sys.stdout,
-        level="INFO",
+        level="DEBUG",  # Temp: dev
+        # level="INFO",  # Temp: dev
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>",
     )
 
@@ -559,9 +498,8 @@ def main() -> None:
     Event.client = client = Client.from_app_name(__app_name__)
 
     # Scrap events
-    logger.info("Scrapping events...")
-    start_date = datetime.today().strftime("%Y-%m-%d")
-    events = scrap_events(EVENT_CALENDAR_URL, start_date=start_date, nb_pages=None)
+    logger.info("Scrapping and geocoding events...")
+    events = scrap_events(EVENT_CALENDAR_URL, start_date=client.today_date, nb_pages=None)
     logger.info(f"Found {len(events)} events")
 
     events_df = pd.DataFrame(event.as_table_dict() for event in events)
@@ -570,12 +508,24 @@ def main() -> None:
     destinations = [(event.location.latitude, event.location.longitude) for event in events]
     table_matrices = client.request_table_lists(destinations=destinations)
 
-    events_df[TableHeader.DISTANCE] = table_matrices.distance
-    events_df[TableHeader.DURATION] = table_matrices.duration
+    events_df[TableHeader.DISTANCE] = [
+        int(x) if not np.isnan(x) else None for x in table_matrices.distance
+    ]
+    events_df[TableHeader.DURATION] = [
+        int(x) if not np.isnan(x) else None for x in table_matrices.duration
+    ]
+    events_df = events_df.astype(
+        {
+            TableHeader.DATE: pd.Int32Dtype(),
+            TableHeader.DURATION: pd.Int32Dtype(),
+            TableHeader.DISTANCE: pd.Int32Dtype(),
+        },
+        copy=False,
+    )
 
     # Export
+    events_df.to_csv(OUTPUT_FILE, index=False)
     logger.info(f"Exported filtered events to {OUTPUT_FILE}.")
-    print(f"Exported filtered events to {OUTPUT_FILE}.")
 
 
 if __name__ == "__main__":
