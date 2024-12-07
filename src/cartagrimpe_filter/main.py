@@ -26,15 +26,13 @@ from bs4 import BeautifulSoup, ResultSet, Tag
 from cachier import cachier
 from geopy import Location  # pyright:ignore[reportMissingTypeStubs]
 from geopy.geocoders import Nominatim  # pyright:ignore[reportMissingTypeStubs]
+from kajihs_utils import batch, get_first
 from loguru import logger
 from requests import HTTPError, RequestException
 
 from cartagrimpe_filter.__about__ import __app_name__
-from cartagrimpe_filter.utils import get_first
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
-
     from numpy.typing import NDArray
 
 
@@ -426,11 +424,6 @@ def request_table_matrices(  # noqa: PLR0914
     """Request distance and duration matrix from the OSRM API."""
     OSRM_API_URL = "http://router.project-osrm.org/table/v1/driving"
     BATCH_SIZE = 250
-
-    def batch[S: Sequence[Any]](seq: S, n: int) -> Iterator[S]:
-        l = len(seq)
-        for ndx in range(0, l, n):
-            yield seq[ndx : min(ndx + n, l)]  # pyright: ignore[reportReturnType]
 
     distance_matrix = np.full((len(sources), len(destinations)), None)
     duration_matrix = np.full((len(sources), len(destinations)), None)
