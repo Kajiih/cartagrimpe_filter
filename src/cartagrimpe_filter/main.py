@@ -6,6 +6,7 @@ import re
 import sys
 from datetime import datetime, timedelta
 from enum import Enum, StrEnum, auto
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -31,6 +32,7 @@ from loguru import logger
 from requests import HTTPError, RequestException
 
 from cartagrimpe_filter.__about__ import __app_name__
+from cartagrimpe_filter.gsheet import update_spreadsheet
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
@@ -38,7 +40,8 @@ if TYPE_CHECKING:
 
 # === Config (temp) ===
 BASE_ADDRESS = "MCJ de Migennes"
-OUTPUT_FILE = "climbing_events.csv"
+G_SHEET_KEY = "1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo"
+OUTPUT_FILE = Path("output/climbing_events.csv")
 REQUEST_TIMEOUT = 10
 EVENT_CALENDAR_URL = "https://cartagrimpe.fr/en/calendrier"
 _CACHE_STALE_TIME = timedelta(weeks=4)
@@ -476,8 +479,8 @@ def setup_logging() -> None:
 
     logger.add(
         sys.stdout,
-        level="DEBUG",  # Temp: dev
-        # level="INFO",  # Temp: dev
+        # level="DEBUG",  # Temp: dev
+        level="INFO",
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>",
     )
 
@@ -502,23 +505,28 @@ def main() -> None:
     table_matrices = client.request_table_lists(destinations=destinations)
 
     events_df[TableHeader.DISTANCE] = [
-        int(x) if not np.isnan(x) else None for x in table_matrices.distance
+        int(x) if not np.isnan(x) else x for x in table_matrices.distance
     ]
     events_df[TableHeader.DURATION] = [
-        int(x) if not np.isnan(x) else None for x in table_matrices.duration
+        int(x) if not np.isnan(x) else x for x in table_matrices.duration
     ]
-    events_df = events_df.astype(
+    exported_df = events_df.astype(
         {
             TableHeader.DATE: pd.Int32Dtype(),
             TableHeader.DURATION: pd.Int32Dtype(),
             TableHeader.DISTANCE: pd.Int32Dtype(),
         },
-        copy=False,
+        copy=True,
     )
 
     # Export
-    events_df.to_csv(OUTPUT_FILE, index=False)
+    OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+    exported_df.to_csv(OUTPUT_FILE, index=False)
     logger.info(f"Exported filtered events to {OUTPUT_FILE}.")
+
+    # Update Google Spreadsheet
+    update_spreadsheet(events_df, sheet_key=G_SHEET_KEY)
+    logger.info(f"Updated spreadsheet at with key: {G_SHEET_KEY}.")
 
 
 if __name__ == "__main__":

@@ -8,31 +8,13 @@
 
 Use Cartagrimpe data to find climbing events near you.
 
-<p align="center">
-  <img src="media/package_illustration.png" alt="Illustration">
-</p>
-
-## Contents <!-- omit from toc -->
-
-- [⬇️ Installation](#️-installation)
-- [🏃 Getting Started](#-getting-started)
-- [🧾 License](#-license)
-
-## ⬇️ Installation
-
-You can install **cartagrimpe_filter** via pip:
-
-```bash
-pip install cartagrimpe-filter
-```
-
-<!-- ### Requirements -->
-
 ## 🏃 Getting Started
 
 In google sheet:
 
 - Import -> Replace active sheet on the raw data sheet.
+
+To enable automatically updating the google spreadsheet, follow the [guide to authenticate as end user](https://docs.gspread.org/en/latest/oauth2.html#for-end-users-using-oauth-client-id).
 
 [Documentation](https://cartagrimpe-filter.readthedocs.io)
 
