@@ -1,7 +1,5 @@
 [![Build][github-ci-image]][github-ci-link]
 [![Coverage Status][codecov-image]][codecov-link]
-[![PyPI Version][pypi-image]][pypi-link]
-[![PyPI - Python Version][python-image]][pypi-link]
 ![License][license-image]
 
 # Cartagrimpe Filter
@@ -37,8 +35,4 @@ This package was created with [Cookiecutter](https://github.com/audreyr/cookiecu
 [codecov-image]: https://img.shields.io/codecov/c/github/Kajiih/cartagrimpe_filter/main.svg?logo=codecov&logoColor=aaaaaa&labelColor=333333
 [codecov-link]: https://codecov.io/github/Kajiih/cartagrimpe_filter
 
-[pypi-image]: https://img.shields.io/pypi/v/cartagrimpe-filter.svg?logo=pypi&logoColor=aaaaaa&labelColor=333333
-[pypi-link]: https://pypi.python.org/pypi/cartagrimpe-filter
-
-[python-image]: https://img.shields.io/pypi/pyversions/cartagrimpe-filter?logo=python&logoColor=aaaaaa&labelColor=333333
 [license-image]: https://img.shields.io/badge/license-MIT_license-blue.svg?labelColor=333333
