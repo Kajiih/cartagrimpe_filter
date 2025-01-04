@@ -4,15 +4,37 @@
 
 # Cartagrimpe Filter
 
-Use Cartagrimpe data to find climbing events near you.
+Use Cartagrimpe data to find climbing events near you and export them in Google Spreadsheet.
 
-## 🏃 Getting Started
+![Full Spreadsheet Screenshot](media/full_spreadsheet_screenshot.png)
+
+## 🏃 How to use?
 
 Duplicate [this](https://docs.google.com/spreadsheets/d/1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo/edit?gid=1168437626#gid=1168437626) spreadsheet in your google drive.
 
-Set `BASE_ADDRESS` to the address you want the distance to be computed from and `G_SHEET_KEY` to the url key of your duplicated spreadsheet in `src/cartagrimpe_filter/main.py`.
+In the main script `src/cartagrimpe_filter/main.py`, set `BASE_ADDRESS` to the address you want distances to be computed from, and `G_SHEET_KEY` to the url key of your duplicated spreadsheet.
 
 To enable automatically updating the google spreadsheet, follow the [guide to authenticate as end user](https://docs.gspread.org/en/latest/oauth2.html#for-end-users-using-oauth-client-id).
+
+## 📸 Screenshots <!-- omit from toc -->
+
+<details>
+  <summary>Click to expand screenshots</summary>
+
+### Raw Spreadsheet
+
+![Raw Spreadsheet Screenshot](media/raw_spreadsheet_screenshot.png)
+
+### Formatted
+
+![Full Formatted Spreadsheet Screenshot](media/full_spreadsheet_screenshot.png)
+
+### Filtered Events (distance, time, date, event type, etc)
+
+![Filtered Events Spreadsheet](media/events_spreadsheet_screenshot.png)
+
+
+</details>
 
 <!-- Links -->
 [github-ci-image]: https://github.com/Kajiih/cartagrimpe_filter/actions/workflows/build.yml/badge.svg?branch=main
