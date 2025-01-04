@@ -8,25 +8,11 @@ Use Cartagrimpe data to find climbing events near you.
 
 ## 🏃 Getting Started
 
-In google sheet:
+Duplicate [this](https://docs.google.com/spreadsheets/d/1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo/edit?gid=1168437626#gid=1168437626) spreadsheet in your google drive.
 
-- Import -> Replace active sheet on the raw data sheet.
+Set `BASE_ADDRESS` to the address you want the distance to be computed from and `G_SHEET_KEY` to the url key of your duplicated spreadsheet in `src/cartagrimpe_filter/main.py`.
 
 To enable automatically updating the google spreadsheet, follow the [guide to authenticate as end user](https://docs.gspread.org/en/latest/oauth2.html#for-end-users-using-oauth-client-id).
-
-[Documentation](https://cartagrimpe-filter.readthedocs.io)
-
-<!-- ## 📔 Citation -->
-
-## 🧾 License
-
-[MIT license](LICENSE)
-
-<!-- ## 🤝 Contributing -->
-
-## Credits <!-- omit from toc -->
-
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [Kajiih/cookiecutter-pypackage-kj](https://github.com/Kajiih/cookiecutter-pypackage-kj) project template based on  [audreyr/cookiecutter-pypackage](https://github.com/audreyr/cookiecutter-pypackage).
 
 <!-- Links -->
 [github-ci-image]: https://github.com/Kajiih/cartagrimpe_filter/actions/workflows/build.yml/badge.svg?branch=main

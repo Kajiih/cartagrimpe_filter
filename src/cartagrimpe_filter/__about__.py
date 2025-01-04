@@ -10,4 +10,3 @@ __authors__ = ["Kajih"]
 __author_emails__ = ["itskajih@gmail.com"]
 __repo_url__ = "https://github.com/Kajiih/cartagrimpe_filter"
 __issues_url__ = f"{__repo_url__}/issues"
-__documentation__ = "https://cartagrimpe-filter.readthedocs.io"

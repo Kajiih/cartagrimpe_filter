@@ -38,16 +38,19 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
-# === Config (temp) ===
+# === User Config (temp) ===
 BASE_ADDRESS = "MCJ de Migennes"
 G_SHEET_KEY = "1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo"
+
+
+# === Constants ===
 OUTPUT_FILE = Path("output/climbing_events.csv")
 REQUEST_TIMEOUT = 10
 EVENT_CALENDAR_URL = "https://cartagrimpe.fr/en/calendrier"
 _CACHE_STALE_TIME = timedelta(weeks=4)
+CLEAR_GEOCODE_CACHES = False
 
 
-# === Constants ===
 class _Auto(Enum):
     """
     Sentinel to indicate a value automatically set.
@@ -130,9 +133,10 @@ DEFAULT_IP_LOCATION_DICT = {
 
 DEFAULT_IP_LOCATION = IPLocation.from_ipinfo_dict(DEFAULT_IP_LOCATION_DICT)
 
-DEFAULT_LOCATION = Location(address="", point=(0, 0), raw={})
+DEFAULT_LOCATION = Location(address="Migennes", point=(47.9655, 3.5179), raw={"address": {}})
 
 
+# TODO: Replace sentinels cached values by None to not cache them
 # TODO? replace auto initializations with a single factory method
 # TODO? use cachier(pickle_reload=False) if everything runs in a single thread
 @attrs.frozen
@@ -165,7 +169,12 @@ class Client:
     @classmethod
     def from_app_name(cls, app_name: str) -> Client:
         """Return a client with initialized geolocator."""
-        return cls(Nominatim(user_agent=app_name))
+        return cls(
+            Nominatim(
+                user_agent=app_name,
+                timeout=REQUEST_TIMEOUT,  # pyright: ignore[reportArgumentType]
+            )
+        )
 
     @property
     def base_coords(self) -> Coordinate:
@@ -190,7 +199,7 @@ class Client:
 
         if location is None:
             logger.warning(
-                f"Geocoding failed for address: {address}. Falling back to default location."
+                f"Geocoding returned None for address '{address}'. Falling back to default location."
             )
             return DEFAULT_LOCATION
 
@@ -407,7 +416,7 @@ def get_address_short(location: Location) -> str:
     address_split = [get_amenity(location), address.get("road"), get_city(location)]
     address_split = [x for x in address_split if x]
 
-    return ", ".join(address_split) if address_split else address["country"]
+    return ", ".join(address_split) if address_split else address.get("country", "")
 
 
 class TableMatrices(NamedTuple):
@@ -492,6 +501,10 @@ def main() -> None:
 
     # Initialize geolocator client
     Event.client = client = Client.from_app_name(__app_name__)
+
+    if CLEAR_GEOCODE_CACHES:
+        client._geocode_normalized.clear_cache()
+        client.reverse_geocode.clear_cache()
 
     # Scrap events
     logger.info("Scrapping and geocoding events...")
