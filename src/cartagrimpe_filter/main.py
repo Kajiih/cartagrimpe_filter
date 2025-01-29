@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 # === User Config (temp) ===
 BASE_ADDRESS = "MCJ de Migennes"
 G_SHEET_KEY = "1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo"
-
+VERIFY_SSL = False  # True is recommended
 
 # === Constants ===
 OUTPUT_FILE = Path("output/climbing_events.csv")
@@ -167,13 +167,14 @@ class Client:
         return self.geocode(self.base_address)
 
     @classmethod
-    def from_app_name(cls, app_name: str) -> Client:
+    def from_app_name(cls, app_name: str, base_address: str | None = None) -> Client:
         """Return a client with initialized geolocator."""
         return cls(
-            Nominatim(
+            geolocator=Nominatim(
                 user_agent=app_name,
                 timeout=REQUEST_TIMEOUT,  # pyright: ignore[reportArgumentType]
-            )
+            ),
+            base_address=base_address or AUTO,
         )
 
     @property
@@ -368,7 +369,7 @@ def scrap_events(
     while current_url and (nb_pages is None or nb_pages - page_number >= 0):
         logger.debug(f"Fetching page {page_number}: {current_url}")
         try:
-            response = requests.get(current_url, timeout=REQUEST_TIMEOUT)
+            response = requests.get(current_url, timeout=REQUEST_TIMEOUT, verify=VERIFY_SSL)
             response.raise_for_status()
         except (RequestException, HTTPError):
             logger.exception(f"Failed to fetch page {current_url}")
@@ -500,7 +501,7 @@ def main() -> None:
     setup_logging()
 
     # Initialize geolocator client
-    Event.client = client = Client.from_app_name(__app_name__)
+    Event.client = client = Client.from_app_name(__app_name__, base_address=BASE_ADDRESS)
 
     if CLEAR_GEOCODE_CACHES:
         client._geocode_normalized.clear_cache()

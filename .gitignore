@@ -171,3 +171,5 @@ cython_debug/
 
 # Outputs
 output/
+
+*.log.zip

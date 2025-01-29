@@ -14,6 +14,12 @@ Duplicate [this](https://docs.google.com/spreadsheets/d/1BgeKD8rEr9TV1p7V9vni8st
 
 In the main script `src/cartagrimpe_filter/main.py`, set `BASE_ADDRESS` to the address you want distances to be computed from, and `G_SHEET_KEY` to the url key of your duplicated spreadsheet.
 
+Then execute the main script:
+
+```python
+python src/cartagrimpe_filter/main.py
+```
+
 To enable automatically updating the google spreadsheet, follow the [guide to authenticate as end user](https://docs.gspread.org/en/latest/oauth2.html#for-end-users-using-oauth-client-id).
 
 ## 📸 Screenshots <!-- omit from toc -->
@@ -32,7 +38,6 @@ To enable automatically updating the google spreadsheet, follow the [guide to au
 ### Filtered Events (distance, time, date, event type, etc)
 
 ![Filtered Events Spreadsheet](media/events_spreadsheet_screenshot.png)
-
 
 </details>
 
