@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 # === User Config (temp) ===
 BASE_ADDRESS = "MCJ de Migennes"
 G_SHEET_KEY = "1BgeKD8rEr9TV1p7V9vni8stgSki1cl_eqcVxebXTfSo"
-VERIFY_SSL = False  # True is recommended
+VERIFY_SSL = True  # True is recommended
 
 # === Constants ===
 OUTPUT_FILE = Path("output/climbing_events.csv")
@@ -493,6 +493,8 @@ def setup_logging() -> None:
         level="INFO",
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>",
     )
+
+    logger.info("🧗 === Starting Cartagrimpe Filter === 🧗")
 
 
 @logger.catch(reraise=True)
